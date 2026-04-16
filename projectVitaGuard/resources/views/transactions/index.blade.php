@@ -18,6 +18,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Nama Pembeli</th>
+                            <th>Nama Layanan</th>
                             <th>Tanggal Transaksi</th>
                             <th>Status</th>
                         </tr>
@@ -26,7 +27,8 @@
                         @forelse ($transactions as $transaction)
                             <tr>
                                 <td>{{ $transaction->id }}</td>
-                                <td>{{ $transaction->nama_pembeli }}</td>
+                                <td>{{ $transaction->user->name }}</td>
+                                <td>{{ $transaction->service->service_name }}</td>
                                 <td>{{ $transaction->tanggal_transaksi }}</td>
                                 <td>{{ ucfirst($transaction->status) }}</td>
                             </tr>

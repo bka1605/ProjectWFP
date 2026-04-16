@@ -14,11 +14,11 @@ class ArticleSeeder extends Seeder
     public function run(): void
     {
         //
-         DB::table('articles')->insert([
+        DB::table('articles')->insert([
             [
                 'judul' => 'Langkah - Langkah Menjaga Kesehatan Liver',
                 'kategori' => 'Kesehatan',
-                'tanggal_publish' => '2024-01-02', 
+                'tanggal_publish' => '2024-01-02',
             ]
         ]);
     }

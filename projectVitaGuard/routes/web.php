@@ -42,6 +42,10 @@ Route::get('/admin/{jenis}', function ($jenis) {
     abort(404);
 })->name('admin.menu');
 
+Route::get('/admin', function () {
+    return view('admin.menu');
+})->name('admin');
+
 Route::resource('services', ServiceController::class)->only(['index']);
 Route::resource('categories', CategoryController::class)->only(['index']);
 Route::resource('doctors', DoctorController::class)->only(['index']);

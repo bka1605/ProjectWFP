@@ -19,9 +19,7 @@ class TransactionSeeder extends Seeder
                 'nama_pembeli'=>'Chellyne',
                 'tanggal_transaksi'=>now(),
                 'status'=>'completed',
-
             ]
-            
         ]);
     }
 }

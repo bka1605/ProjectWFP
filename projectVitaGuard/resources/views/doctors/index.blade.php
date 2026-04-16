@@ -18,7 +18,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Nama</th>
-                            <th>Spepsialisasi</th>
+                            <th>Spesialisasi</th>
                             <th>No. Telepon</th>
                             <th>Lama Kerja</th>
                         </tr>
@@ -28,7 +28,7 @@
                             <tr>
                                 <td>{{ $doctor->id }}</td>
                                 <td>{{ $doctor->nama }}</td>
-                                <td>{{ $doctor->spepsialisasi }}</td>
+                                <td>{{ $doctor->spesialisasi }}</td>
                                 <td>{{ $doctor->nomor_telepon }}</td>
                                 <td>{{ $doctor->lama_kerja }} tahun</td>
                             </tr>
@@ -39,6 +39,8 @@
                         @endforelse
                     </tbody>
                 </table>
+                <a href="{{ route('menu') }}" class="btn btn-outline-primary">Kembali ke Menu</a>
+                
             </div>
         </div>
     </div>

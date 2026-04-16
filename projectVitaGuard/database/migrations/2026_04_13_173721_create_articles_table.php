@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('judul');
             $table->string('kategori');
+            $table->text('konten');
             $table->date('tanggal_publish'); 
             $table->timestamps();
         });

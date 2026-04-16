@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('transaction', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_pembeli');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('service_id')->constrained()->onDelete('cascade');
             $table->dateTime('tanggal_transaksi');
-            $table->enum('status',['pending','completed','cancelled']);
+            $table->enum('status', ['pending', 'completed', 'cancelled']);
             $table->timestamps();
         });
     }

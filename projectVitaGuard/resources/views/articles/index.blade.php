@@ -18,6 +18,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Judul</th>
+                            <th>Konten</th>
                             <th>Kategori</th>
                             <th>Tanggal Publish</th>
                         </tr>
@@ -27,6 +28,7 @@
                             <tr>
                                 <td>{{ $article->id }}</td>
                                 <td>{{ $article->judul }}</td>
+                                <td>{{ $article->konten }}</td>
                                 <td>{{ $article->kategori }}</td>
                                 <td>{{ $article->tanggal_publish }}</td>
                             </tr>
@@ -37,6 +39,8 @@
                         @endforelse
                     </tbody>
                 </table>
+                <a href="{{ route('menu') }}" class="btn btn-outline-primary">Kembali ke Menu</a>
+
             </div>
         </div>
     </div>

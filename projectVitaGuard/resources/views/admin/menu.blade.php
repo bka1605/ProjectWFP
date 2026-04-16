@@ -11,27 +11,27 @@
             <div class="col-md-5">
                 <div class="card shadow-sm border-0 text-center p-4">
                     <div class="card-body">
-                        <h4>Lihat Daftar Layanan</h4>
-                        <p class="text-muted">Informasi tentang layanan kesehatan.</p>
-                        <a href="{{ url('services') }}" class="btn btn-primary w-100">Buka Layanan</a>
+                        <h4>Lihat Category</h4>
+                        <p class="text-muted">Informasi tentang kategori layanan.</p>
+                        <a href="{{ url('services') }}" class="btn btn-info w-100">Buka</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-5">
                 <div class="card shadow-sm border-0 text-center p-4">
                     <div class="card-body">
-                        <h4>Artikel Kesehatan</h4>
-                        <p class="text-muted">Informasi terkini tentang kesehatan.</p>
-                        <a href="{{ url('articles') }}" class="btn btn-success w-100">Buka Layanan</a>
+                        <h4>Lihat Daftar Member</h4>
+                        <p class="text-muted">Informasi tentang member.</p>
+                        <a href="{{ url('articles') }}" class="btn btn-warning w-100">Buka</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-5">
                 <div class="card shadow-sm border-0 text-center p-4">
                     <div class="card-body">
-                        <h4>Lihat Daftar Dokter</h4>
-                        <p class="text-muted">Informasi tentang Dokter.</p>
-                        <a href="{{ url('doctors') }}" class="btn btn-danger w-100">Buka Layanan</a>
+                        <h4>Lihat Daftar Transaksi</h4>
+                        <p class="text-muted">Informasi tentang transaksi.</p>
+                        <a href="{{ url('doctors') }}" class="btn btn-secondary w-100">Buka</a>
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
 <footer style="position: absolute; bottom: 0; width: 100%; margin-bottom: 2.5%;">
     <div class="container py-3">
         <p class="text-center text-muted">&copy; 2023 VitaGuard. All rights reserved.</p>
-        <a href="{{ url('admin') }}" style="position: absolute; left: 50%; transform: translateX(-50%);">Menu Admin</a>
+        <a href="{{ url('menu') }}" style="position: absolute; left: 50%; transform: translateX(-50%);">Kembali</a>
     </div>
 </footer>
 </html>

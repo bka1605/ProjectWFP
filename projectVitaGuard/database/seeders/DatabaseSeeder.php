@@ -1,6 +1,11 @@
 <?php
 
 namespace Database\Seeders;
+
+use App\Models\Article;
+use App\Models\Doctor;
+use App\Models\Service;
+use App\Models\Transaction;
 use App\Models\User;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,11 +21,13 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
         $this->call([
             CategoriesSeeder::class,
-            ServiceSeeder::class,
-            DoctorsSeeder::class,
-            TransactionSeeder::class,
-            ArticleSeeder::class,
         ]);
+        Doctor::factory(10)->create();
+        Article::factory(10)->create();
+        Service::factory(10)->create();
+        Transaction::factory(10)->create();
+        
+
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
