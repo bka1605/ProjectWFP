@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Menu - VitaGuard</title>
 </head>
+
 <body class="bg-light">
     <div class="container py-5">
         <h2 class="text-center fw-bold mb-5">Pilih Layanan Kami</h2>
@@ -41,7 +43,10 @@
 <footer style="position: absolute; bottom: 0; width: 100%; margin-bottom: 2.5%;">
     <div class="container py-3">
         <p class="text-center text-muted">&copy; 2023 VitaGuard. All rights reserved.</p>
-        <a href="{{ url('admin') }}" style="position: absolute; left: 50%; transform: translateX(-50%);">Menu Admin</a>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-dark">
+            Admin
+        </a>
     </div>
 </footer>
+
 </html>

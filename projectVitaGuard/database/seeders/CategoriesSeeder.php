@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,12 +13,26 @@ class CategoriesSeeder extends Seeder
     public function run(): void
     {
         DB::table('categories')->insert([
-
-            ['category_name'=>'General Consultation'],
-            ['category_name'=>'Specialist Consultation'],
-            ['category_name'=>'Medical Checkup'],
-            ['category_name'=>'Laboratory Tests'],
-            ['category_name'=>'Telemedicine'],
+            [
+                'category_name' => 'General Consultation',
+                'image' => 'category/general_consultation.jpg',
+            ],
+            [
+                'category_name' => 'Specialist Consultation',
+                'image' => 'category/specialist_consultation.jpg',
+            ],
+            [
+                'category_name' => 'Medical Checkup',
+                'image' => 'category/medical_checkup.jpg',
+            ],
+            [
+                'category_name' => 'Laboratory Tests',
+                'image' => 'category/laboratory_tests.jpg',
+            ],
+            [
+                'category_name' => 'Telemedicine',
+                'image' => 'category/telemedicine.jpg',
+            ],
         ]);
     }
 }

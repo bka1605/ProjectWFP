@@ -30,6 +30,12 @@ Route::get('/menu/{jenis}', function ($jenis) {
     abort(404);
 })->name('menu.jenis');
 
+Route::get('/admin', function () {
+    return view('admin.dashboard', [
+        'judul' => 'Dashboard Admin VitaGuard'
+    ]);
+})->name('admin.dashboard');
+
 Route::get('/admin/{jenis}', function ($jenis) {
     if ($jenis === 'categories') {
         return redirect()->route('categories.index');
@@ -42,12 +48,18 @@ Route::get('/admin/{jenis}', function ($jenis) {
     abort(404);
 })->name('admin.menu');
 
-Route::get('/admin', function () {
-    return view('admin.menu');
-})->name('admin');
-
-Route::resource('services', ServiceController::class)->only(['index']);
+Route::resource('services', ServiceController::class)->only(['index', 'show']);
 Route::resource('categories', CategoryController::class)->only(['index']);
+
+Route::get('/category/showExpensiveService', [CategoryController::class, 'showExpensiveService'])
+    ->name('category.showExpensiveService');
+
+Route::post('/category/showInfo', [CategoryController::class, 'showInfo'])
+    ->name('category.showInfo');
+
+Route::post('/category/showListServices', [CategoryController::class, 'showListServices'])
+    ->name('category.showListServices');
+
 Route::resource('doctors', DoctorController::class)->only(['index']);
 Route::resource('articles', ArticleController::class)->only(['index']);
 Route::resource('transactions', TransactionController::class)->only(['index']);

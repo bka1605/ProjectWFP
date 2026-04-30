@@ -1,44 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>{{ $judul }}</title>
-</head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="card shadow border-0">
-            <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">{{ $judul }}</h5>
-            </div>
-            <div class="card-body">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-light">
+@extends('layouts.admin')
+
+@section('content')
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="fw-bold mb-1">{{ $judul }}</h2>
+            <p class="text-muted mb-0">Daftar pasien/member yang terdaftar pada VitaGuard.</p>
+        </div>
+
+        <a href="{{ route('transactions.index') }}" class="btn btn-outline-primary">
+            Lihat Transactions
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nama Member</th>
+                        <th>Email</th>
+                        <th>Email Verified</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($members as $member)
                         <tr>
-                            <th>ID</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>Email Verified</th>
+                            <td>{{ $member->id }}</td>
+                            <td>{{ $member->name }}</td>
+                            <td>{{ $member->email }}</td>
+                            <td>
+                                @if ($member->email_verified_at)
+                                    <span class="badge bg-success">Sudah</span>
+                                @else
+                                    <span class="badge bg-secondary">Belum</span>
+                                @endif
+                            </td>
+                            <td>{{ $member->created_at }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($members as $member)
-                            <tr>
-                                <td>{{ $member->id }}</td>
-                                <td>{{ $member->name }}</td>
-                                <td>{{ $member->email }}</td>
-                                <td>{{ $member->email_verified_at ? 'Sudah' : 'Belum' }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">Belum ada data member.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">
+                                Belum ada data member.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
-</body>
-</html>
+@endsection

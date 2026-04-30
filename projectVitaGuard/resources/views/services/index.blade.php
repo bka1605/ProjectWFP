@@ -1,48 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>{{ $judul }}</title>
-</head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="card shadow border-0">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">{{ $judul }}</h5>
-            </div>
-            <div class="card-body">
-                <table class="table table-hover table-bordered align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nama Layanan</th>
-                            <th>Kategori</th>
-                            <th>Availability</th>
-                            <th>Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($services as $service)
-                            <tr>
-                                <td>{{ $service->id }}</td>
-                                <td>{{ $service->service_name }}</td>
-                                <td>{{ $service->category->category_name ?? '-' }}</td>
-                                <td>{{ $service->availability }}</td>
-                                <td>Rp {{ number_format($service->price, 0, ',', '.') }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center text-muted">Belum ada data layanan.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+@extends('layouts.admin')
 
-                <a href="{{ route('menu') }}" class="btn btn-outline-primary">Kembali ke Menu</a>
-            </div>
+@section('content')
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="fw-bold mb-1">{{ $judul }}</h2>
+            <p class="text-muted mb-0">Daftar layanan kesehatan yang tersedia di VitaGuard.</p>
+        </div>
+
+        <a href="{{ route('categories.index') }}" class="btn btn-outline-primary">
+            Lihat Categories
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-primary">
+                    <tr>
+                        <th>ID</th>
+                        <th>Service Name</th>
+                        <th>Description</th>
+                        <th>Availability</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($services as $service)
+                        <tr>
+                            <td>{{ $service->id }}</td>
+                            <td>
+                                <a href="{{ route('services.show', $service->id) }}" class="text-decoration-none fw-semibold">
+                                    {{ $service->service_name }}
+                                </a>
+                            </td>
+                            <td>{{ $service->description }}</td>
+                            <td>{{ $service->availability }}</td>
+                            <td>Rp {{ number_format($service->price, 0, ',', '.') }}</td>
+                            <td>{{ $service->category->category_name ?? '-' }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">Belum ada data service.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
-</body>
-</html>
+@endsection
