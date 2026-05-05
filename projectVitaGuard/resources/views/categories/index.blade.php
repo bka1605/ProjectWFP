@@ -71,8 +71,8 @@
                                         <div class="modal-body text-center">
                                             @if ($category->image)
                                                 <img src="{{ asset('storage/' . $category->image) }}"
-                                                     class="img-fluid rounded"
-                                                     alt="{{ $category->category_name }}">
+                                                    class="img-fluid rounded"
+                                                    alt="{{ $category->category_name }}">
                                             @else
                                                 <div class="alert alert-warning mb-0">
                                                     Gambar belum tersedia untuk category ini.

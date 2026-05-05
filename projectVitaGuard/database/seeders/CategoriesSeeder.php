@@ -15,23 +15,23 @@ class CategoriesSeeder extends Seeder
         DB::table('categories')->insert([
             [
                 'category_name' => 'General Consultation',
-                'image' => 'category/general_consultation.jpg',
+                'image' => 'img/category/general_consultation.jpg',
             ],
             [
                 'category_name' => 'Specialist Consultation',
-                'image' => 'category/specialist_consultation.jpg',
+                'image' => 'img/category/specialist_consultation.jpg',
             ],
             [
                 'category_name' => 'Medical Checkup',
-                'image' => 'category/medical_checkup.jpg',
+                'image' => 'img/category/medical_checkup.jpg',
             ],
             [
                 'category_name' => 'Laboratory Tests',
-                'image' => 'category/laboratory_tests.jpg',
+                'image' => 'img/category/laboratory_tests.jpg',
             ],
             [
                 'category_name' => 'Telemedicine',
-                'image' => 'category/telemedicine.jpg',
+                'image' => 'img/category/telemedicine.jpg',
             ],
         ]);
     }
