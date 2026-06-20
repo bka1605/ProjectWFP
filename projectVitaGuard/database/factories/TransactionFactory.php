@@ -20,7 +20,6 @@ class TransactionFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id ?? 1,
-            'service_id' => Service::inRandomOrder()->first()->id ?? 1,
             'tanggal_transaksi' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'status' => $this->faker->randomElement(['pending', 'completed', 'cancelled']),
         ];

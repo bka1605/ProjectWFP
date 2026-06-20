@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Service;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -18,6 +19,73 @@ class CategoryController extends Controller
             'judul' => 'List of Categories',
             'categories' => $categories,
         ]);
+    }
+
+    public function create()
+    {
+        return view('categories.create', [
+            'judul' => 'Tambah Category Baru',
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'category_name' => 'required|string|max:255',
+        ]);
+
+        $data = new Category();
+        $data->category_name = $request->get('category_name');
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('category', 'public');
+            $data->image = $path;
+        }
+
+        $data->save();
+
+        return redirect()->route('categories.index')
+            ->with('success', 'Category berhasil ditambahkan!');
+    }
+
+    public function edit(Category $category)
+    {
+        return view('categories.edit', [
+            'judul' => 'Edit Category',
+            'category' => $category,
+        ]);
+    }
+
+    public function update(Request $request, Category $category)
+    {
+        $request->validate([
+            'category_name' => 'required|string|max:255',
+        ]);
+
+        $category->category_name = $request->get('category_name');
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('category', 'public');
+            $category->image = $path;
+        }
+
+        $category->save();
+
+        return redirect()->route('categories.index')
+            ->with('success', 'Category berhasil diupdate!');
+    }
+
+    public function destroy(Category $category)
+    {
+        try {
+            $category->delete(); // soft delete
+            return redirect()->route('categories.index')
+                ->with('success', 'Category berhasil dihapus!');
+        } catch (\PDOException $ex) {
+            $msg = 'Tidak dapat menghapus category ini karena masih memiliki data terkait.';
+            return redirect()->route('categories.index')
+                ->with('status', $msg);
+        }
     }
 
     public function showExpensiveService()

@@ -3,6 +3,13 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            <a href="{{ route('services.create') }}" class="btn btn-primary">+ New Service</a>
             <h2 class="fw-bold mb-1">{{ $judul }}</h2>
             <p class="text-muted mb-0">Daftar layanan kesehatan yang tersedia di VitaGuard.</p>
         </div>
@@ -23,6 +30,7 @@
                         <th>Availability</th>
                         <th>Price</th>
                         <th>Category</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,10 +46,25 @@
                             <td>{{ $service->availability }}</td>
                             <td>Rp {{ number_format($service->price, 0, ',', '.') }}</td>
                             <td>{{ $service->category->category_name ?? '-' }}</td>
+                            <td>
+                                <a href="{{ route('services.show', $service->id) }}"
+                                   class="btn btn-info btn-sm text-white">Detail</a>
+                                
+                                <a href="{{ route('services.edit', $service->id) }}"
+                                   class="btn btn-warning btn-sm">Edit</a>
+                                
+                                <form method="POST" action="{{ route('services.destroy', $service->id) }}"
+                                      class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="submit" value="Delete" class="btn btn-danger btn-sm"
+                                           onclick="return confirm('Yakin hapus service {{ $service->service_name }}?')">
+                                </form>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted">Belum ada data service.</td>
+                            <td colspan="7" class="text-center text-muted">Belum ada data service.</td>
                         </tr>
                     @endforelse
                 </tbody>

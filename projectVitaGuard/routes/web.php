@@ -48,8 +48,9 @@ Route::get('/admin/{jenis}', function ($jenis) {
     abort(404);
 })->name('admin.menu');
 
-Route::resource('services', ServiceController::class)->only(['index', 'show']);
-Route::resource('categories', CategoryController::class)->only(['index']);
+Route::resource('services', ServiceController::class)->only(['index', 'show', 'create', 'store', 'edit', 'update', 'destroy']);
+Route::resource('categories', CategoryController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+Route::resource('transactions', TransactionController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
 
 Route::get('/category/showExpensiveService', [CategoryController::class, 'showExpensiveService'])
     ->name('category.showExpensiveService');

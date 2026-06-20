@@ -3,6 +3,19 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            @if (session('status'))
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    {{ session('status') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+            <a href="{{ route('categories.create') }}" class="btn btn-primary mb-3">+ New Category</a>
             <h2 class="fw-bold mb-1">{{ $judul }}</h2>
             <p class="text-muted mb-0">
                 Klik <a href="#" onclick="showInfo(); return false;">informasi category</a>
@@ -27,6 +40,7 @@
                         <th>Image</th>
                         <th>Total Services</th>
                         <th>List Services</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,10 +50,8 @@
                             <td>{{ $category->category_name }}</td>
 
                             <td>
-                                <button type="button"
-                                        class="btn btn-primary btn-sm"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#imageModal-{{ $category->id }}">
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#imageModal-{{ $category->id }}">
                                     Show Image
                                 </button>
                             </td>
@@ -47,31 +59,42 @@
                             <td>{{ $category->services_count }}</td>
 
                             <td>
-                                <button type="button"
-                                        class="btn btn-info btn-sm text-white"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#detailModal"
-                                        onclick="showDetail({{ $category->id }})">
+                                <button type="button" class="btn btn-info btn-sm text-white" data-bs-toggle="modal"
+                                    data-bs-target="#detailModal" onclick="showDetail({{ $category->id }})">
                                     Details
                                 </button>
+                            </td>
+
+                            <td>
+                                <a href="{{ route('categories.edit', $category->id) }}"
+                                   class="btn btn-warning btn-sm">Edit</a>
+
+                                <form method="POST" action="{{ route('categories.destroy', $category->id) }}"
+                                      class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="submit" value="Delete" class="btn btn-danger btn-sm"
+                                           onclick="return confirm('Yakin hapus category {{ $category->category_name }}?')">
+                                </form>
                             </td>
                         </tr>
 
                         @push('modals')
-                            <div class="modal fade" id="imageModal-{{ $category->id }}" tabindex="-1" aria-labelledby="imageModalLabel-{{ $category->id }}" aria-hidden="true">
+                            <div class="modal fade" id="imageModal-{{ $category->id }}" tabindex="-1"
+                                aria-labelledby="imageModalLabel-{{ $category->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h1 class="modal-title fs-5" id="imageModalLabel-{{ $category->id }}">
                                                 Gambar untuk {{ $category->category_name }}
                                             </h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
 
                                         <div class="modal-body text-center">
                                             @if ($category->image)
-                                                <img src="{{ asset('storage/' . $category->image) }}"
-                                                    class="img-fluid rounded"
+                                                <img src="{{ asset('storage/' . $category->image) }}" class="img-fluid rounded"
                                                     alt="{{ $category->category_name }}">
                                             @else
                                                 <div class="alert alert-warning mb-0">
@@ -91,7 +114,7 @@
                         @endpush
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center text-muted">Belum ada data category.</td>
+                            <td colspan="6" class="text-center text-muted">Belum ada data category.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -132,10 +155,10 @@
                 data: {
                     '_token': '{{ csrf_token() }}'
                 },
-                success: function(data) {
+                success: function (data) {
                     $('#showinfo').html(data.msg);
                 },
-                error: function() {
+                error: function () {
                     $('#showinfo').html('<div class="alert alert-danger">Gagal mengambil informasi category.</div>');
                 }
             });
@@ -152,11 +175,11 @@
                     '_token': '{{ csrf_token() }}',
                     'idcat': id
                 },
-                success: function(data) {
+                success: function (data) {
                     $('#detail-title').html(data.title);
                     $('#detail-body').html(data.body);
                 },
-                error: function() {
+                error: function () {
                     $('#detail-title').html('Error');
                     $('#detail-body').html('<div class="alert alert-danger">Gagal mengambil list services.</div>');
                 }

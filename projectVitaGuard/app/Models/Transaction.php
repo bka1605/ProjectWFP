@@ -13,7 +13,6 @@ class Transaction extends Model
 
     protected $fillable = [
         'user_id',
-        'service_id',
         'tanggal_transaksi',
         'status',
     ];
@@ -23,8 +22,8 @@ class Transaction extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function service()
+    public function services()
     {
-        return $this->belongsTo(Service::class, 'service_id');
+        return $this->belongsToMany(Service::class, 'transaction_service');
     }
 }
