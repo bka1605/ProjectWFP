@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,14 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand fw-bold" href="{{ route('home') }}">VitaGuard</a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVitaGuard" aria-controls="navbarVitaGuard" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVitaGuard"
+                aria-controls="navbarVitaGuard" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -45,11 +48,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('members.index') }}">Members</a>
                     </li>
-                </ul>
-
-                <span class="navbar-text text-white">
-                    Admin Panel
+                </ul> <span class="navbar-text text-white me-3">
+                    Halo, {{ Auth::user()->name }} ({{ Auth::user()->role }})
                 </span>
+
+                <form action="{{ route('logout') }}" method="post" class="d-inline">
+                    @csrf
+                    <input type="submit" value="Logout" class='btn btn-danger btn-sm' />
+                </form>
             </div>
         </div>
     </nav>
@@ -69,4 +75,5 @@
 
     @stack('script')
 </body>
+
 </html>

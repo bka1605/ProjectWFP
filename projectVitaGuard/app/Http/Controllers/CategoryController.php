@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -77,6 +78,7 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        $this->authorize('delete-permission', Auth::user());
         try {
             $category->delete(); // soft delete
             return redirect()->route('categories.index')
@@ -143,5 +145,89 @@ class CategoryController extends Controller
             'title' => $name . ' - Service List',
             'body' => view('categories.showListServices', compact('name', 'data'))->render(),
         ], 200);
+    }
+
+    public function getEditForm(Request $request)
+    {
+        $id   = $request->id;
+        $data = Category::find($id);
+
+        if (!$data) {
+            return response()->json([
+                'status' => 'not_found',
+                'msg'    => '<div class="alert alert-danger">Category tidak ditemukan.</div>',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'oke',
+            'msg'    => view('categories.getEditForm', compact('data'))->render(),
+        ], 200);
+    }
+
+    public function getEditFormB(Request $request)
+    {
+        $id   = $request->id;
+        $data = Category::find($id);
+
+        if (!$data) {
+            return response()->json([
+                'status' => 'not_found',
+                'msg'    => '<div class="alert alert-danger">Category tidak ditemukan.</div>',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'oke',
+            'msg'    => view('categories.getEditFormB', compact('data'))->render(),
+        ], 200);
+    }
+
+    public function saveDataUpdate(Request $request)
+    {
+        $id   = $request->id;
+        $data = Category::find($id);
+
+        if (!$data) {
+            return response()->json([
+                'status' => 'not_found',
+                'msg'    => 'Category tidak ditemukan.',
+            ], 404);
+        }
+
+        $data->category_name = $request->name;
+        $data->save();
+
+        return response()->json([
+            'status' => 'oke',
+            'msg'    => 'Category berhasil diupdate!',
+        ], 200);
+    }
+
+    public function deleteData(Request $request)
+    {
+        $this->authorize('delete-permission', Auth::user());
+        $id   = $request->id;
+        $data = Category::find($id);
+
+        if (!$data) {
+            return response()->json([
+                'status' => 'not_found',
+                'msg'    => 'Category tidak ditemukan.',
+            ], 404);
+        }
+
+        try {
+            $data->delete(); // soft delete
+            return response()->json([
+                'status' => 'oke',
+                'msg'    => 'Category berhasil dihapus!',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'msg'    => 'Tidak dapat menghapus category ini.',
+            ], 500);
+        }
     }
 }

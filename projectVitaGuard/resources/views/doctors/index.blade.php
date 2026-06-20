@@ -22,6 +22,7 @@
                         <th>Spesialisasi</th>
                         <th>Nomor Telepon</th>
                         <th>Lama Kerja</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,10 +33,17 @@
                             <td>{{ $doctor->spepsialisasi }}</td>
                             <td>{{ $doctor->nomor_telepon }}</td>
                             <td>{{ $doctor->lama_kerja }} tahun</td>
+                            <td>
+                                <a href="#" class="btn btn-secondary btn-sm">Edit</a>
+
+                                @can('delete-permission', Auth::user())
+                                    <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                                @endcan
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center text-muted">
+                            <td colspan="6" class="text-center text-muted">
                                 Belum ada data dokter.
                             </td>
                         </tr>
