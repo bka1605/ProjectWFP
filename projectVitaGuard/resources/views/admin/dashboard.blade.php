@@ -95,7 +95,7 @@
     </div>
 @endsection
 
-@push('scripts')
+@push('script')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const ctx = document.getElementById('statsChart');
