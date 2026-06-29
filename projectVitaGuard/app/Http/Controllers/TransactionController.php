@@ -13,7 +13,6 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = Transaction::with(['user', 'services'])->orderBy('tanggal_transaksi', 'desc')->get();
-        
         $services = Service::orderBy('service_name', 'asc')->get();
         $users = User::orderBy('name', 'asc')->get();
 
@@ -25,11 +24,26 @@ class TransactionController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        $services = Service::orderBy('service_name', 'asc')->get();
+        $users = User::orderBy('name', 'asc')->get();
+
+        return view('transactions.create', [
+            'judul' => 'Tambah Transaksi Baru',
+            'services' => $services,
+            'users' => $users,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'service_ids' => 'required|array|min:1',
+            'service_ids.*' => 'exists:services,id',
+            'quantities' => 'required|array|min:1',
+            'quantities.*' => 'integer|min:1',
             'tanggal_transaksi' => 'required|date',
             'status' => 'required|in:pending,completed,cancelled',
         ]);
@@ -40,9 +54,48 @@ class TransactionController extends Controller
         $transaction->status = $request->get('status');
         $transaction->save();
 
-        $transaction->services()->sync($request->get('service_ids'));
+        $syncData = [];
+        $serviceIds = $request->get('service_ids');
+        $quantities = $request->get('quantities');
+
+        foreach ($serviceIds as $serviceId) {
+            $qty = isset($quantities[$serviceId]) ? (int) $quantities[$serviceId] : 1;
+            $syncData[$serviceId] = ['quantity' => $qty];
+        }
+
+        $transaction->services()->sync($syncData);
 
         return redirect()->route('transactions.index')->with('success', 'Transaksi berhasil ditambahkan!');
+    }
+
+    public function show(Transaction $transaction)
+    {
+        $transaction->load('user', 'services');
+
+        return view('transactions.show', [
+            'judul' => 'Detail Transaksi #' . $transaction->id,
+            'transaction' => $transaction,
+        ]);
+    }
+
+    public function edit(Transaction $transaction)
+    {
+        $transaction->load('services');
+        $services = Service::orderBy('service_name', 'asc')->get();
+        $users = User::orderBy('name', 'asc')->get();
+
+        $selectedServices = [];
+        foreach ($transaction->services as $service) {
+            $selectedServices[$service->id] = $service->pivot->quantity;
+        }
+
+        return view('transactions.edit', [
+            'judul' => 'Edit Transaksi #' . $transaction->id,
+            'transaction' => $transaction,
+            'services' => $services,
+            'users' => $users,
+            'selectedServices' => $selectedServices,
+        ]);
     }
 
     public function update(Request $request, Transaction $transaction)
@@ -50,6 +103,9 @@ class TransactionController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'service_ids' => 'required|array|min:1',
+            'service_ids.*' => 'exists:services,id',
+            'quantities' => 'required|array|min:1',
+            'quantities.*' => 'integer|min:1',
             'tanggal_transaksi' => 'required|date',
             'status' => 'required|in:pending,completed,cancelled',
         ]);
@@ -59,7 +115,16 @@ class TransactionController extends Controller
         $transaction->status = $request->get('status');
         $transaction->save();
 
-        $transaction->services()->sync($request->get('service_ids'));
+        $syncData = [];
+        $serviceIds = $request->get('service_ids');
+        $quantities = $request->get('quantities');
+
+        foreach ($serviceIds as $serviceId) {
+            $qty = isset($quantities[$serviceId]) ? (int) $quantities[$serviceId] : 1;
+            $syncData[$serviceId] = ['quantity' => $qty];
+        }
+
+        $transaction->services()->sync($syncData);
 
         return redirect()->route('transactions.index')->with('success', 'Transaksi berhasil diupdate!');
     }
@@ -81,11 +146,15 @@ class TransactionController extends Controller
         $data = Transaction::with('services')->find($request->id);
         $users = User::orderBy('name', 'asc')->get();
         $services = Service::orderBy('service_name', 'asc')->get();
-        $selectedServiceIds = $data->services->pluck('id')->toArray();
+
+        $selectedServices = [];
+        foreach ($data->services as $service) {
+            $selectedServices[$service->id] = $service->pivot->quantity;
+        }
 
         return response()->json([
             'status' => 'oke',
-            'msg' => view('transactions.getEditForm', compact('data', 'users', 'services', 'selectedServiceIds'))->render(),
+            'msg' => view('transactions.getEditForm', compact('data', 'users', 'services', 'selectedServices'))->render(),
         ], 200);
     }
 
@@ -94,39 +163,55 @@ class TransactionController extends Controller
         $data = Transaction::with('services')->find($request->id);
         $users = User::orderBy('name', 'asc')->get();
         $services = Service::orderBy('service_name', 'asc')->get();
-        $selectedServiceIds = $data->services->pluck('id')->toArray();
+
+        $selectedServices = [];
+        foreach ($data->services as $service) {
+            $selectedServices[$service->id] = $service->pivot->quantity;
+        }
 
         return response()->json([
             'status' => 'oke',
-            'msg' => view('transactions.getEditFormB', compact('data', 'users', 'services', 'selectedServiceIds'))->render(),
+            'msg' => view('transactions.getEditFormB', compact('data', 'users', 'services', 'selectedServices'))->render(),
         ], 200);
     }
 
     public function saveDataUpdate(Request $request)
     {
         $data = Transaction::find($request->id);
-        if (!$data)
+        if (!$data) {
             return response()->json(['status' => 'not_found', 'msg' => 'Data tidak ditemukan.'], 404);
+        }
 
         $data->user_id = $request->user_id;
         $data->tanggal_transaksi = $request->tanggal_transaksi;
         $data->status = $request->status;
         $data->save();
 
-        $data->services()->sync($request->service_ids);
+        $serviceIds = $request->service_ids ?? [];
+        $quantities = $request->quantities ?? [];
 
+        $syncData = [];
+        foreach ($serviceIds as $serviceId) {
+            $qty = isset($quantities[$serviceId]) ? (int) $quantities[$serviceId] : 1;
+            $syncData[$serviceId] = ['quantity' => $qty];
+        }
+
+        $data->services()->sync($syncData);
         $data->load('user', 'services');
 
         $servicesHtml = '';
         if ($data->services->count() > 0) {
             foreach ($data->services as $s) {
-                $servicesHtml .= '<span class="badge bg-primary mb-1 me-1">' . $s->service_name . '</span> ';
+                $qty = $s->pivot->quantity;
+                $servicesHtml .= '<span class="badge bg-primary mb-1 me-1">'
+                    . $s->service_name
+                    . ' <span class="badge bg-light text-dark">x' . $qty . '</span>'
+                    . '</span> ';
             }
         } else {
             $servicesHtml = '<span class="text-muted">-</span>';
         }
 
-        $statusHtml = '';
         if ($data->status === 'completed') {
             $statusHtml = '<span class="badge bg-success">Completed</span>';
         } elseif ($data->status === 'pending') {
@@ -141,15 +226,16 @@ class TransactionController extends Controller
             'user_name' => $data->user->name ?? '-',
             'services_html' => $servicesHtml,
             'tanggal' => $data->tanggal_transaksi,
-            'status_html' => $statusHtml
+            'status_html' => $statusHtml,
         ], 200);
     }
 
     public function deleteData(Request $request)
     {
         $data = Transaction::find($request->id);
-        if (!$data)
+        if (!$data) {
             return response()->json(['status' => 'error', 'msg' => 'Data tidak ditemukan.'], 404);
+        }
 
         $data->services()->detach();
         $data->delete();

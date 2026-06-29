@@ -29,7 +29,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Member</th>
-                        <th>Services</th>
+                        <th>Services (Qty)</th>
                         <th>Tanggal</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -42,7 +42,10 @@
                             <td id="td_user_{{ $transaction->id }}">{{ $transaction->user->name ?? '-' }}</td>
                             <td id="td_services_{{ $transaction->id }}">
                                 @forelse ($transaction->services as $service)
-                                    <span class="badge bg-primary mb-1 me-1">{{ $service->service_name }}</span>
+                                    <span class="badge bg-primary mb-1 me-1">
+                                        {{ $service->service_name }}
+                                        <span class="badge bg-light text-dark">x{{ $service->pivot->quantity }}</span>
+                                    </span>
                                 @empty
                                     <span class="text-muted">-</span>
                                 @endforelse
@@ -103,26 +106,42 @@
                                 @endforeach
                             </select>
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Services <span class="text-danger">*</span></label>
-                            <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+                            <label class="form-label fw-semibold">Services & Quantity <span
+                                    class="text-danger">*</span></label>
+                            <small class="text-muted d-block mb-2">Centang service lalu isi jumlahnya.</small>
+                            <div class="border rounded p-3" style="max-height: 240px; overflow-y: auto;">
                                 @foreach ($services as $service)
-                                    <div class="form-check mb-1">
-                                        <input class="form-check-input" type="checkbox" name="service_ids[]"
-                                            value="{{ $service->id }}" id="create_service_{{ $service->id }}">
-                                        <label class="form-check-label" for="create_service_{{ $service->id }}">
-                                            {{ $service->service_name }} <span class="text-muted">— Rp
-                                                {{ number_format($service->price, 0, ',', '.') }}</span>
-                                        </label>
+                                    <div class="row align-items-center mb-2">
+                                        <div class="col-7">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="service_ids[]"
+                                                    value="{{ $service->id }}" id="create_svc_{{ $service->id }}"
+                                                    onchange="toggleQtyCreate(this, {{ $service->id }})">
+                                                <label class="form-check-label" for="create_svc_{{ $service->id }}">
+                                                    {{ $service->service_name }}
+                                                    <small class="text-muted">— Rp
+                                                        {{ number_format($service->price, 0, ',', '.') }}</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-5">
+                                            <input type="number" class="form-control form-control-sm"
+                                                name="quantities[{{ $service->id }}]" id="create_qty_{{ $service->id }}"
+                                                value="1" min="1" disabled style="width: 80px;">
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
+
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Tanggal Transaksi <span
                                     class="text-danger">*</span></label>
                             <input type="datetime-local" class="form-control" name="tanggal_transaksi" required>
                         </div>
+
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
                             <select class="form-select" name="status" required>
@@ -173,14 +192,29 @@
 
 @push('script')
     <script>
+        function toggleQtyCreate(checkbox, serviceId) {
+            var qtyInput = document.getElementById('create_qty_' + serviceId);
+            if (checkbox.checked) {
+                qtyInput.disabled = false;
+                qtyInput.focus();
+            } else {
+                qtyInput.disabled = true;
+                qtyInput.value = 1;
+            }
+        }
+
         function getEditForm(id) {
             $('#modalContentA').html('<div class="text-center text-muted">Memuat form...</div>');
             $.ajax({
                 type: 'POST',
                 url: '{{ route("transaction.getEditForm") }}',
                 data: { '_token': '<?php echo csrf_token(); ?>', 'id': id },
-                success: function (data) { $('#modalContentA').html(data.msg); },
-                error: function () { $('#modalContentA').html('<div class="alert alert-danger">Gagal memuat form.</div>'); }
+                success: function (data) {
+                    $('#modalContentA').html(data.msg);
+                },
+                error: function () {
+                    $('#modalContentA').html('<div class="alert alert-danger">Gagal memuat form.</div>');
+                }
             });
         }
 
@@ -190,8 +224,12 @@
                 type: 'POST',
                 url: '{{ route("transaction.getEditFormB") }}',
                 data: { '_token': '<?php echo csrf_token(); ?>', 'id': id },
-                success: function (data) { $('#modalContentB').html(data.msg); },
-                error: function () { $('#modalContentB').html('<div class="alert alert-danger">Gagal memuat form.</div>'); }
+                success: function (data) {
+                    $('#modalContentB').html(data.msg);
+                },
+                error: function () {
+                    $('#modalContentB').html('<div class="alert alert-danger">Gagal memuat form.</div>');
+                }
             });
         }
 
@@ -201,12 +239,16 @@
             var status = $('#cstatus').val();
 
             var service_ids = [];
+            var quantities = {};
+
             $('.cservice_checkbox:checked').each(function () {
-                service_ids.push($(this).val());
+                var sid = $(this).val();
+                service_ids.push(sid);
+                quantities[sid] = parseInt($('#cqty_' + sid).val()) || 1;
             });
 
             if (service_ids.length === 0) {
-                alert("Pilih minimal satu service!");
+                alert('Pilih minimal satu service!');
                 return;
             }
 
@@ -219,7 +261,8 @@
                     'user_id': user_id,
                     'tanggal_transaksi': tanggal,
                     'status': status,
-                    'service_ids': service_ids
+                    'service_ids': service_ids,
+                    'quantities': quantities
                 },
                 success: function (data) {
                     if (data.status === 'oke') {
@@ -234,7 +277,9 @@
                         $('#ajax-alert').html('<div class="alert alert-success alert-dismissible fade show">' + data.msg + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
                     }
                 },
-                error: function () { alert('Gagal menyimpan data.'); }
+                error: function () {
+                    alert('Gagal menyimpan data.');
+                }
             });
         }
 
@@ -246,10 +291,12 @@
                 success: function (data) {
                     if (data.status === 'oke') {
                         $('#tr_' + id).fadeOut(400, function () { $(this).remove(); });
-                        $('#ajax-alert').html('<div class="alert alert-success alert-dismissible fade show">' + data.msg + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+                        $('#ajax-alert').html('<div class="alert alert-success alert-dismissible fade show">Transaksi berhasil dihapus! <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
                     }
                 },
-                error: function () { alert('Gagal menghapus data.'); }
+                error: function () {
+                    alert('Gagal menghapus data.');
+                }
             });
         }
     </script>
