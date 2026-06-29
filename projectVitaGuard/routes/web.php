@@ -8,20 +8,16 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\FrontEndController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
 
 Route::get('/', [FrontEndController::class, 'home'])->name('home');
-
 Route::get('/detail/{service}', [FrontEndController::class, 'detail'])->name('detailService');
-
 Route::get('/cart', [FrontEndController::class, 'cart'])->name('cart');
-
 Route::put('/goto-cart/{service}', [FrontEndController::class, 'putCart'])->name('putCart');
-
 Route::delete('/goto-cart/{service}', [FrontEndController::class, 'deleteCart'])->name('deleteCart');
-
 Route::post('/submit', [FrontEndController::class, 'checkout'])->name('checkout')->middleware('auth');
 
 Route::get('/welcome', function () {
@@ -38,19 +34,12 @@ Route::get('/menu/{jenis}', function ($jenis) {
     } elseif ($jenis === 'janji') {
         return view('menujanji');
     }
-
     abort(404);
 })->name('menu.jenis');
 
+Route::middleware(['auth', 'role:admin'])->group(function () {
 
-
-Route::middleware(['auth'])->group(function () {
-
-    Route::get('/admin', function () {
-        return view('admin.dashboard', [
-            'judul' => 'Dashboard Admin VitaGuard'
-        ]);
-    })->name('admin.dashboard');
+    Route::get('/admin', [HomeController::class, 'dashboard'])->name('admin.dashboard');
 
     Route::get('/admin/{jenis}', function ($jenis) {
         if ($jenis === 'categories') {
@@ -60,7 +49,6 @@ Route::middleware(['auth'])->group(function () {
         } elseif ($jenis === 'members') {
             return redirect()->route('members.index');
         }
-
         abort(404);
     })->name('admin.menu');
 
@@ -73,13 +61,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/category/showExpensiveService', [CategoryController::class, 'showExpensiveService'])
         ->name('category.showExpensiveService');
-
     Route::post('/category/showInfo', [CategoryController::class, 'showInfo'])
         ->name('category.showInfo');
-
     Route::post('/category/showListServices', [CategoryController::class, 'showListServices'])
         ->name('category.showListServices');
-
 
     Route::post('/ajax/category/getEditForm', [CategoryController::class, 'getEditForm'])
         ->name('category.getEditForm');
@@ -87,7 +72,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('category.getEditFormB');
     Route::post('/ajax/category/saveDataUpdate', [CategoryController::class, 'saveDataUpdate'])
         ->name('category.saveDataUpdate');
-    Route::post('/ajax/category/deleteData', [CategoryController::class, 'deleteData'])->name('category.deleteData');
+    Route::post('/ajax/category/deleteData', [CategoryController::class, 'deleteData'])
+        ->name('category.deleteData');
 
     Route::post('/ajax/article/getEditForm', [ArticleController::class, 'getEditForm'])
         ->name('article.getEditForm');
@@ -95,7 +81,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('article.getEditFormB');
     Route::post('/ajax/article/saveDataUpdate', [ArticleController::class, 'saveDataUpdate'])
         ->name('article.saveDataUpdate');
-    Route::post('/ajax/article/deleteData', [ArticleController::class, 'deleteData'])->name('article.deleteData');
+    Route::post('/ajax/article/deleteData', [ArticleController::class, 'deleteData'])
+        ->name('article.deleteData');
 
     Route::post('/ajax/service/getEditForm', [ServiceController::class, 'getEditForm'])
         ->name('service.getEditForm');
@@ -103,7 +90,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('service.getEditFormB');
     Route::post('/ajax/service/saveDataUpdate', [ServiceController::class, 'saveDataUpdate'])
         ->name('service.saveDataUpdate');
-    Route::post('/ajax/service/deleteData', [ServiceController::class, 'deleteData'])->name('service.deleteData');
+    Route::post('/ajax/service/deleteData', [ServiceController::class, 'deleteData'])
+        ->name('service.deleteData');
 
     Route::post('/ajax/transaction/getEditForm', [TransactionController::class, 'getEditForm'])
         ->name('transaction.getEditForm');
@@ -111,7 +99,18 @@ Route::middleware(['auth'])->group(function () {
         ->name('transaction.getEditFormB');
     Route::post('/ajax/transaction/saveDataUpdate', [TransactionController::class, 'saveDataUpdate'])
         ->name('transaction.saveDataUpdate');
-    Route::post('/ajax/transaction/deleteData', [TransactionController::class, 'deleteData'])->name('transaction.deleteData');
+    Route::post('/ajax/transaction/deleteData', [TransactionController::class, 'deleteData'])
+        ->name('transaction.deleteData');
+});
 
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home.dashboard');
+Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->name('dokter.')->group(function () {
+    Route::get('/dashboard', [HomeController::class, 'dashboardDokter'])->name('dashboard');
+});
+
+Route::middleware(['auth', 'role:member'])->prefix('member')->name('member.')->group(function () {
+    Route::get('/dashboard', [HomeController::class, 'dashboardMember'])->name('dashboard');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home.dashboard');
 });
