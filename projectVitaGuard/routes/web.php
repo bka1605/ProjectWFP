@@ -7,13 +7,22 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\FrontEndController;
 use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [FrontEndController::class, 'home'])->name('home');
+
+Route::get('/detail/{service}', [FrontEndController::class, 'detail'])->name('detailService');
+
+Route::get('/cart', [FrontEndController::class, 'cart'])->name('cart');
+
+Route::put('/goto-cart/{service}', [FrontEndController::class, 'putCart'])->name('putCart');
+
+Route::delete('/goto-cart/{service}', [FrontEndController::class, 'deleteCart'])->name('deleteCart');
+
+Route::post('/submit', [FrontEndController::class, 'checkout'])->name('checkout')->middleware('auth');
 
 Route::get('/welcome', function () {
     return view('welcomehealth');
