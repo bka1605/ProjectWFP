@@ -108,4 +108,91 @@ class HomeController extends Controller
 
         return redirect()->back()->with('success', 'Profil Anda berhasil diperbarui!');
     }
+
+    public function dashboardMember()
+    {
+        
+        if (view()->exists('member.dashboard')) {
+            return view('member.dashboard', ['judul' => 'Dashboard Member VitaGuard']);
+        }
+        
+        return view('home');
+    }
+
+    // Mengambil semua data dari tabel doctors untuk menampilkan semua doctors
+
+    public function memberDoctors()
+    {
+        
+        $allDoctors = \App\Models\Doctor::all();
+
+        return view('member.listdoctors', [
+            'judul'   => 'Daftar Dokter Spesialis - VitaGuard',
+            'doctors' => $allDoctors
+        ]);
+    }
+
+    // Untuk menampilkan profile dokter tertentu 
+    public function memberDoctorProfile($id)
+    {
+        $dokter = \App\Models\Doctor::findOrFail($id);
+
+        return view('member.doctor_profile', [
+            'judul'  => 'Profil ' . $dokter->nama . ' - VitaGuard',
+            'dokter' => $dokter
+        ]);
+    }
+
+    public function memberArticles(\Illuminate\Http\Request $request)
+    {
+        $search = $request->input('search');
+
+        $query = \App\Models\Article::query();
+
+        if (!empty($search)) {
+            $query->where('judul', 'LIKE', '%' . $search . '%');
+        }
+
+        $allArticles = $query->orderBy('created_at', 'desc')->get();
+
+        return view('member.listarticles', [
+            'judul' => 'Artikel Kesehatan - VitaGuard',
+            'articles' => $allArticles,
+            'search' => $search 
+        ]);
+    }
+
+   public function memberArticleDetail($id)
+    {
+        // Cari artikel berdasarkan ID
+        $artikel = \App\Models\Article::findOrFail($id);
+
+        return view('member.detailarticle', [
+            'judul' => $artikel->judul . ' - VitaGuard', // Menggunakan $artikel->judul
+            'article' => $artikel
+        ]);
+    }
+    
+    public function memberHistory()
+    {
+        
+        $user = \Illuminate\Support\Facades\Auth::user();
+
+        $riwayat = collect();
+
+        try {
+            
+            $riwayat = \App\Models\Transaction::where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } catch (\Exception $e) {
+            
+            $riwayat = collect();
+        }
+
+        return view('member.history', [
+            'judul' => 'Riwayat Konsultasi Saya - VitaGuard',
+            'history' => $riwayat
+        ]);
+    }
 }

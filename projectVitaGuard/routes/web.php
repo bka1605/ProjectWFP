@@ -116,3 +116,18 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::put('/dokter/profile/update', [HomeController::class, 'updateProfileDokter'])->name('dokter.profile.update');
+
+//  untuk melihat semua daftar dokter
+Route::get('/member/doctors', [App\Http\Controllers\HomeController::class, 'memberDoctors'])->name('member.doctors');
+
+//  untuk melihat detail profil dokter tertentu
+Route::get('/member/doctors/{id}', [App\Http\Controllers\HomeController::class, 'memberDoctorProfile'])->name('member.doctors.profile');
+
+// Rute untuk daftar artikel dan fitur pencarian
+Route::get('/member/articles', [App\Http\Controllers\HomeController::class, 'memberArticles'])->name('member.articles');
+
+// Rute untuk membaca detail artikel tertentu berdasarkan ID
+Route::get('/member/articles/{id}', [App\Http\Controllers\HomeController::class, 'memberArticleDetail'])->name('member.articles.detail');
+
+// Rute untuk melihat riwayat konsultasi khusus member (tidak bisa hapus)
+Route::get('/member/history', [App\Http\Controllers\HomeController::class, 'memberHistory'])->name('member.history');
