@@ -21,34 +21,57 @@
 
             <div class="collapse navbar-collapse" id="navbarVitaGuard">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('services.index') }}">Services</a>
-                    </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('categories.index') }}">Categories</a>
-                    </li>
+                    {{-- ========================================================== --}}
+                    {{-- TAMBAHAN BARU: MENU NAVBAR KHUSUS UNTUK DOKTER             --}}
+                    {{-- ========================================================== --}}
+                    @if(Auth::user()->role === 'dokter')
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold text-warning" href="{{ route('home') }}">Dashboard Dokter</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#konsultasi-aktif">Konsultasi Aktif</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#riwayat-konsultasi">Riwayat & Pasien</a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('category.showExpensiveService') }}">Report</a>
-                    </li>
+                    {{-- ========================================================== --}}
+                    {{-- KODE ASLI TEMAN ANDA: MENU NAVBAR KHUSUS UNTUK ADMIN       --}}
+                    {{-- ========================================================== --}}
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('services.index') }}">Services</a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('doctors.index') }}">Doctors</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('categories.index') }}">Categories</a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('articles.index') }}">Articles</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('category.showExpensiveService') }}">Report</a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('transactions.index') }}">Transactions</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('doctors.index') }}">Doctors</a>
+                        </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('members.index') }}">Members</a>
-                    </li>
-                </ul> <span class="navbar-text text-white me-3">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('articles.index') }}">Articles</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('transactions.index') }}">Transactions</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('members.index') }}">Members</a>
+                        </li>
+                    @endif
+
+                </ul> 
+                
+                <span class="navbar-text text-white me-3">
                     Halo, {{ Auth::user()->name }} ({{ Auth::user()->role }})
                 </span>
 

@@ -37,4 +37,15 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
+    protected function authenticated(\Illuminate\Http\Request $request, $user)
+    {
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'dokter') {
+            return redirect()->route('dokter.dashboard'); // Mengalirkan ke rute dashboard dokter Anda
+        } elseif ($user->role === 'member') {
+            return redirect()->route('member.dashboard');
+        }
+    }
 }

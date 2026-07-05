@@ -51,6 +51,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', 'string', 'in:admin,member,dokter'],
         ]);
     }
 
@@ -67,5 +68,16 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
         ]);
+    }
+
+    protected function registered(\Illuminate\Http\Request $request, $user)
+    {
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'dokter') {
+            return redirect()->route('dokter.dashboard');
+        } elseif ($user->role === 'member') {
+            return redirect()->route('member.dashboard');
+        }
     }
 }

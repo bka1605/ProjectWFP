@@ -30,8 +30,9 @@
                             
                             <div class="col-md-6">
                                 <select id="role" class="form-control @error('role') is-invalid @enderror" name="role" required>
-                                    <option value="admin">Admin</option>
-                                    <option value="member">Member</option>
+                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                    <option value="member" {{ old('role') == 'member' ? 'selected' : '' }}>Member</option>
+                                    <option value="dokter" {{ old('role') == 'dokter' ? 'selected' : '' }}>Dokter</option>
                                 </select>
 
                                 @error('role')
@@ -41,6 +42,7 @@
                                 @enderror
                             </div>
                         </div>
+
                         <div class="row mb-3">
                             <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
 

@@ -114,3 +114,5 @@ Route::middleware(['auth', 'role:member'])->prefix('member')->name('member.')->g
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home.dashboard');
 });
+
+Route::put('/dokter/profile/update', [HomeController::class, 'updateProfileDokter'])->name('dokter.profile.update');
