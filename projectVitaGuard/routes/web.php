@@ -5,6 +5,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\FrontEndController;
@@ -58,6 +59,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('doctors', DoctorController::class);
     Route::resource('articles', ArticleController::class);
     Route::resource('members', MemberController::class);
+    Route::resource('bookings', BookingController::class);
 
     Route::get('/category/showExpensiveService', [CategoryController::class, 'showExpensiveService'])
         ->name('category.showExpensiveService');
@@ -105,10 +107,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->name('dokter.')->group(function () {
     Route::get('/dashboard', [HomeController::class, 'dashboardDokter'])->name('dashboard');
+
+    Route::get('/bookings', [BookingController::class, 'indexDoctor'])->name('bookings');
+    Route::patch('/bookings/{booking}/status', [BookingController::class, 'updateStatus'])->name('bookings.updateStatus');
 });
 
 Route::middleware(['auth', 'role:member'])->prefix('member')->name('member.')->group(function () {
     Route::get('/dashboard', [HomeController::class, 'dashboardMember'])->name('dashboard');
+
+    Route::get('/booking/create/{doctor_id}', [BookingController::class, 'create'])->name('booking.create');
+    Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
+    Route::get('/history', [BookingController::class, 'history'])->name('history');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -130,4 +139,4 @@ Route::get('/member/articles', [App\Http\Controllers\HomeController::class, 'mem
 Route::get('/member/articles/{id}', [App\Http\Controllers\HomeController::class, 'memberArticleDetail'])->name('member.articles.detail');
 
 // Rute untuk melihat riwayat konsultasi khusus member (tidak bisa hapus)
-Route::get('/member/history', [App\Http\Controllers\HomeController::class, 'memberHistory'])->name('member.history');
+//Route::get('/member/history', [App\Http\Controllers\HomeController::class, 'memberHistory'])->name('member.history');

@@ -10,7 +10,7 @@ class MemberController extends Controller
     {
         $members = User::all();
 
-        return view('members.index', [
+        return view('member.index', [
             'judul' => 'Portal Manajemen: Daftar Pasien / Member',
             'members' => $members,
         ]);

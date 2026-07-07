@@ -83,6 +83,7 @@ class HomeController extends Controller
 
     public function updateProfileDokter(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
         
         $request->validate([
