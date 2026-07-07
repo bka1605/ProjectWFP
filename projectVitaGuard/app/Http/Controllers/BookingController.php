@@ -59,7 +59,8 @@ class BookingController extends Controller
         $user = Auth::user();
         $bookings = Booking::with('doctor')
             ->where('member_id', $user->id)
-            ->orderBy('created_at', 'desc')
+            ->orderByRaw("CASE WHEN status IN ('pending', 'accepted') THEN 1 ELSE 2 END")
+            ->orderBy('jadwal', 'desc')
             ->get();
 
         $transactions = collect();
@@ -82,6 +83,7 @@ class BookingController extends Controller
         }
 
         $bookings = Booking::where('doctor_id', $doctor->id)
+            ->orderByRaw("CASE WHEN status IN ('pending', 'accepted') THEN 1 ELSE 2 END")
             ->orderBy('jadwal', 'asc')
             ->get();
 
