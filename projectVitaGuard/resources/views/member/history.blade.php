@@ -54,11 +54,11 @@
                                     </td>
                                     <td class="text-center pe-4">
                                         @if($row->status == 'accepted')
-                                            <a href="#" class="btn btn-primary btn-sm rounded-pill px-3">
+                                            <a href="{{ route('consultation.show', $row->id) }}" class="btn btn-primary btn-sm rounded-pill px-3">
                                                 <i class="bi bi-chat-text"></i> Mulai Chat
                                             </a>
                                         @elseif($row->status == 'completed')
-                                            <a href="#" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                                            <a href="{{ route('consultation.show', $row->id) }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
                                                 <i class="bi bi-eye"></i> Lihat Chat
                                             </a>
                                         @else

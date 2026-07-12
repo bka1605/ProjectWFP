@@ -11,6 +11,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\FrontEndController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ConsultationController;
 
 Auth::routes();
 
@@ -140,3 +141,22 @@ Route::get('/member/articles/{id}', [App\Http\Controllers\HomeController::class,
 
 // Rute untuk melihat riwayat konsultasi khusus member (tidak bisa hapus)
 //Route::get('/member/history', [App\Http\Controllers\HomeController::class, 'memberHistory'])->name('member.history');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/consultation/{id}', [ConsultationController::class, 'show'])
+        ->name('consultation.show');
+
+    // Kirim pesan (AJAX POST, pola sama seperti Week 7/11)
+    Route::post('/consultation/send', [ConsultationController::class, 'sendMessage'])
+        ->name('consultation.send');
+
+    // Ambil pesan terbaru (AJAX GET, dipakai untuk auto-refresh chat)
+    Route::get('/consultation/{id}/fetch', [ConsultationController::class, 'fetchMessages'])
+        ->name('consultation.fetch');
+});
+
+// Hanya dokter yang boleh menutup sesi konsultasi
+Route::middleware(['auth', 'role:dokter'])->group(function () {
+    Route::patch('/consultation/{id}/close', [ConsultationController::class, 'close'])
+        ->name('consultation.close');
+});

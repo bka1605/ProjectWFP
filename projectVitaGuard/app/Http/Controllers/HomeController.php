@@ -32,9 +32,9 @@ class HomeController extends Controller
             'total_dokter' => \App\Models\Doctor::count(),
             'total_member' => \App\Models\User::where('role', 'member')->count(),
             'total_artikel' => \App\Models\Article::count(),
-            'total_booking' => 0,
-            'konsultasi_berlangsung' => 0,
-            'konsultasi_selesai' => 0,
+            'total_booking' => \App\Models\Booking::count(),
+            'konsultasi_berlangsung' => \App\Models\Booking::where('status', 'accepted')->count(),
+            'konsultasi_selesai' => \App\Models\Booking::where('status', 'completed')->count(),
         ];
 
         return view('admin.dashboard', [
@@ -48,44 +48,38 @@ class HomeController extends Controller
         $user = \Illuminate\Support\Facades\Auth::user();
         $dokter = \App\Models\Doctor::where('nama', $user->name)->first();
 
-        // Menggunakan collect() kosong sebagai bawaan aman jika tabel transaksi error
         $konsultasiAktif = collect();
         $riwayatKonsultasi = collect();
-        
-        if ($dokter) {
-            // Blok Try-Catch: Mencegah halaman Anda merah/error jika kolom tabel kelompok berbeda
-            try {
-                $konsultasiAktif = \App\Models\Transaction::where('doctor_id', $dokter->id)
-                    ->whereIn('status', ['active', 'pending', 'berlangsung'])
-                    ->with('user')
-                    ->get();
 
-                $riwayatKonsultasi = \App\Models\Transaction::where('doctor_id', $dokter->id)
-                    ->whereIn('status', ['completed', 'selesai', 'success']) 
-                    ->with('user')
-                    ->orderBy('created_at', 'desc')
-                    ->get();
-            } catch (\Exception $e) {
-                // Jika tabel transaksi error, bypass dan biarkan data kosong agar halaman Anda tetap tampil rapi
-                $konsultasiAktif = collect();
-                $riwayatKonsultasi = collect();
-            }
+        if ($dokter) {
+            $konsultasiAktif = \App\Models\Booking::where('doctor_id', $dokter->id)
+                ->where('status', 'accepted')
+                ->with('member')
+                ->orderBy('jadwal', 'asc')
+                ->get();
+
+            $riwayatKonsultasi = \App\Models\Booking::where('doctor_id', $dokter->id)
+                ->where('status', 'completed')
+                ->with('member')
+                ->orderBy('updated_at', 'desc')
+                ->get();
         }
 
         return view('doctors.index', [
-            'judul'             => 'Dashboard Dokter VitaGuard',
-            'dokter'            => $dokter,
-            'konsultasiAktif'   => $konsultasiAktif,
+            'judul' => 'Dashboard Dokter VitaGuard',
+            'dokter' => $dokter,
+            'konsultasiAktif' => $konsultasiAktif,
             'riwayatKonsultasi' => $riwayatKonsultasi,
-            'doctors'           => collect()
+            'doctors' => collect()
         ]);
     }
+
 
     public function updateProfileDokter(Request $request)
     {
         /** @var \App\Models\User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
-        
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'spesialisasi' => 'required|string|max:255',
@@ -95,7 +89,7 @@ class HomeController extends Controller
 
         // Cari berdasarkan nama lama user saat ini
         \App\Models\Doctor::updateOrCreate(
-            ['nama' => $user->name], 
+            ['nama' => $user->name],
             [
                 'nama' => $request->nama,
                 'spesialisasi' => $request->spesialisasi,
@@ -112,11 +106,11 @@ class HomeController extends Controller
 
     public function dashboardMember()
     {
-        
+
         if (view()->exists('member.dashboard')) {
             return view('member.dashboard', ['judul' => 'Dashboard Member VitaGuard']);
         }
-        
+
         return view('home');
     }
 
@@ -124,11 +118,11 @@ class HomeController extends Controller
 
     public function memberDoctors()
     {
-        
+
         $allDoctors = \App\Models\Doctor::all();
 
         return view('member.listdoctors', [
-            'judul'   => 'Daftar Dokter Spesialis - VitaGuard',
+            'judul' => 'Daftar Dokter Spesialis - VitaGuard',
             'doctors' => $allDoctors
         ]);
     }
@@ -139,7 +133,7 @@ class HomeController extends Controller
         $dokter = \App\Models\Doctor::findOrFail($id);
 
         return view('member.doctor_profile', [
-            'judul'  => 'Profil ' . $dokter->nama . ' - VitaGuard',
+            'judul' => 'Profil ' . $dokter->nama . ' - VitaGuard',
             'dokter' => $dokter
         ]);
     }
@@ -159,11 +153,11 @@ class HomeController extends Controller
         return view('member.listarticles', [
             'judul' => 'Artikel Kesehatan - VitaGuard',
             'articles' => $allArticles,
-            'search' => $search 
+            'search' => $search
         ]);
     }
 
-   public function memberArticleDetail($id)
+    public function memberArticleDetail($id)
     {
         // Cari artikel berdasarkan ID
         $artikel = \App\Models\Article::findOrFail($id);
@@ -173,21 +167,21 @@ class HomeController extends Controller
             'article' => $artikel
         ]);
     }
-    
+
     public function memberHistory()
     {
-        
+
         $user = \Illuminate\Support\Facades\Auth::user();
 
         $riwayat = collect();
 
         try {
-            
+
             $riwayat = \App\Models\Transaction::where('user_id', $user->id)
                 ->orderBy('created_at', 'desc')
                 ->get();
         } catch (\Exception $e) {
-            
+
             $riwayat = collect();
         }
 

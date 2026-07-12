@@ -14,6 +14,7 @@ class Booking extends Model
         'member_id',
         'jadwal',
         'status',
+        'closed_at',
     ];
 
     public function doctor()
@@ -24,5 +25,9 @@ class Booking extends Model
     public function member()
     {
         return $this->belongsTo(User::class, 'member_id');
+    }
+    public function messages()
+    {
+        return $this->hasMany(ConsultationMessage::class, 'booking_id')->orderBy('created_at', 'asc');
     }
 }

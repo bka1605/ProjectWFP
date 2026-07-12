@@ -69,7 +69,7 @@
                 </form>
             </div>
         </div>
-
+        
         <div class="card shadow-sm border-0 mt-4" id="konsultasi-aktif">
             <div class="card-header bg-warning text-dark fw-bold">
                 <h5 class="mb-0">🔴 Daftar Konsultasi Aktif / Berlangsung</h5>
@@ -90,15 +90,15 @@
                             @forelse($konsultasiAktif as $konsultasi)
                                 <tr>
                                     <td><strong>#{{ $konsultasi->id }}</strong></td>
-                                    <td>{{ $konsultasi->user->name ?? 'Pasien Umum' }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($konsultasi->created_at)->format('d M Y - H:i') }} WIB</td>
+                                    <td>{{ $konsultasi->member->name ?? 'Pasien Umum' }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($konsultasi->jadwal)->format('d M Y - H:i') }} WIB</td>
                                     <td>
                                         <span class="badge bg-warning text-dark text-uppercase">
                                             {{ $konsultasi->status }}
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-success">
+                                        <a href="{{ route('consultation.show', $konsultasi->id) }}" class="btn btn-sm btn-success">
                                             Hubungi Pasien
                                         </a>
                                     </td>
@@ -116,6 +116,7 @@
             </div>
         </div>
 
+        {{-- PATCH #2: Riwayat Konsultasi dengan Relasi Member dan Link Riwayat Percakapan --}}
         <div class="card shadow-sm border-0 mt-4" id="riwayat-konsultasi">
             <div class="card-header bg-secondary text-white fw-bold">
                 <h5 class="mb-0">✅ Riwayat Konsultasi & Daftar Pasien</h5>
@@ -136,7 +137,7 @@
                             @forelse($riwayatConsultasi ?? $riwayatKonsultasi as $riwayat)
                                 <tr>
                                     <td>#{{ $riwayat->id }}</td>
-                                    <td><strong>{{ $riwayat->user->name ?? 'Pasien Selesai' }}</strong></td>
+                                    <td><strong>{{ $riwayat->member->name ?? 'Pasien Selesai' }}</strong></td>
                                     <td>{{ \Carbon\Carbon::parse($riwayat->updated_at)->format('d M Y') }}</td>
                                     <td>
                                         <span class="badge bg-success text-uppercase">
@@ -144,7 +145,9 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="text-muted text-sm">Konsultasi Selesai Diarsip</span>
+                                        <a href="{{ route('consultation.show', $riwayat->id) }}" class="text-muted text-sm">
+                                            Lihat Riwayat Percakapan
+                                        </a>
                                     </td>
                                 </tr>
                             @empty

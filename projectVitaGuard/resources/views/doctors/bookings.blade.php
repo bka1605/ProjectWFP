@@ -65,7 +65,7 @@
                                             <button type="submit" class="btn btn-sm btn-danger rounded-pill px-3">Tolak</button>
                                         </form>
                                     @elseif($booking->status == 'accepted')
-                                        <a href="#" class="btn btn-sm btn-primary rounded-pill px-3"><i class="bi bi-chat-dots"></i> Mulai Chat</a>
+                                        <a href="{{ route('consultation.show', $booking->id) }}" class="btn btn-sm btn-primary rounded-pill px-3"><i class="bi bi-chat-dots"></i> Mulai Chat</a>
                                         <form action="{{ route('dokter.bookings.updateStatus', $booking->id) }}" method="POST" class="d-inline mt-1">
                                             @csrf
                                             @method('PATCH')
