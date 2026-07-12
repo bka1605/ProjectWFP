@@ -47,6 +47,7 @@
 
     <a href="{{ route('dokter.bookings') }}" class="btn btn-outline-secondary mt-3">Kembali ke Daftar Booking</a>
 </div>
+@endsection
 
 @push('script')
 <script>

@@ -37,6 +37,7 @@
 
     <a href="{{ route('member.history') }}" class="btn btn-outline-secondary mt-3">Kembali ke Riwayat</a>
 </div>
+@endsection
 
 @push('script')
 <script>
