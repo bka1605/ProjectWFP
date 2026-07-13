@@ -10,7 +10,7 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $articles = Article::orderBy('id', 'desc')->get();
+        $articles = Article::orderBy('id', 'asc')->get();
         return view('articles.index', [
             'judul' => 'Daftar Artikel Kesehatan',
             'articles' => $articles,

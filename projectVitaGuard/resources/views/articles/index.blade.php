@@ -10,12 +10,18 @@
                 </div>
             @endif
 
-            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalCreateArticle">
-                + New Article (Modal)
-            </button>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">{{ $judul }}</h2>
+                    <p class="text-muted mb-0">Daftar artikel kesehatan di platform VitaGuard.</p>
+                </div>
+                
+            </div>
 
-            <h2 class="fw-bold mb-1">{{ $judul }}</h2>
-            <p class="text-muted mb-0">Daftar artikel kesehatan di platform VitaGuard.</p>
+            <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal"
+                data-bs-target="#modalCreateArticle">
+                <i class="bi bi-plus-lg"></i> + New Article
+            </button>
         </div>
     </div>
 
@@ -41,23 +47,15 @@
                             <td id="td_kategori_{{ $article->id }}">{{ $article->kategori }}</td>
                             <td id="td_tanggal_{{ $article->id }}">{{ $article->tanggal_publish }}</td>
                             <td>
-                                <a href="#modalEditA" class="btn btn-secondary btn-sm" data-bs-toggle="modal"
-                                    onclick="getEditForm({{ $article->id }})">Edit (Modal A)</a>
-
                                 <a href="#modalEditB" class="btn btn-info btn-sm text-white" data-bs-toggle="modal"
-                                    onclick="getEditFormB({{ $article->id }})">Edit (Modal B)</a>
+                                    onclick="getEditFormB({{ $article->id }})">Edit</a>
 
                                 @can('delete-permission', Auth::user())
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        onclick="if(confirm('Yakin hapus artikel ini?')) deleteDataRemove({{ $article->id }})">
-                                        Delete (Ajax)
-                                    </button>
-
                                     <form method="POST" action="{{ route('articles.destroy', $article->id) }}" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger btn-sm"
-                                            onclick="return confirm('Yakin hapus data secara permanen?')">Delete</button>
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Apakah yakin untuk menghapus artikel?')">Delete</button>
                                     </form>
                                 @endcan
                             </td>

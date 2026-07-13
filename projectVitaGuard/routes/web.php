@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CategoryController;
@@ -52,6 +53,17 @@ Route::get('/menu/{jenis}', function ($jenis) {
 # route ini dibungkus menggunakan middleware artinya hanya pengguna login yang memiliki role admin yang dibolehkan akses 
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
+    Route::get('/account', [AccountController::class, 'index'])->name('account.index');
+    Route::post('/account/store', [AccountController::class, 'store'])->name('account.store');
+    Route::put('/account/{id}', [AccountController::class, 'update'])->name('account.update');
+    Route::delete('/account/{id}', [AccountController::class, 'destroy'])->name('account.destroy');
+
+    Route::get('/admin/consultations', [BookingController::class, 'indexAdmin'])->name('consultations.index');
+    Route::get('/consultations/trashed', [BookingController::class, 'trashed'])->name('consultations.trashed');
+    Route::post('/consultations/{id}/restore', [BookingController::class, 'restore'])->name('consultations.restore');
+    Route::put('/consultations/{id}/update', [BookingController::class, 'updateStatus'])->name('consultations.updateStatus');
+    Route::delete('/consultations/{id}', [BookingController::class, 'destroy'])->name('consultations.destroy');
+
     # route untuk menampilkan halaman pusat monitoring/Dashboard khusus administrator
     Route::get('/admin', [HomeController::class, 'dashboard'])->name('admin.dashboard');
     # route untuk mengarahkan ke URL admin secara cepat, jika /categories dia akan redirect kesana dengan cepat 
@@ -71,6 +83,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class);
     Route::resource('doctors', DoctorController::class);
+    Route::post('/doctors/getEditForm', [DoctorController::class, 'getEditForm'])->name('doctors.getEditForm');
     Route::resource('articles', ArticleController::class);
     Route::resource('members', MemberController::class);
     Route::resource('bookings', BookingController::class);
@@ -173,7 +186,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/consultation/{id}', [ConsultationController::class, 'show'])
         ->name('consultation.show');
 
-    
+
     Route::post('/consultation/send', [ConsultationController::class, 'sendMessage'])
         ->name('consultation.send');
 

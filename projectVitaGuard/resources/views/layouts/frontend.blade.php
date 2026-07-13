@@ -123,7 +123,9 @@
             </div>
         @endif
 
-        @yield('content')
+        <main class="flex-grow">
+            @yield('content')
+        </main>
 
     </main>
 

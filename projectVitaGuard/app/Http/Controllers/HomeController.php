@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
+use App\Models\Doctor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -45,23 +48,29 @@ class HomeController extends Controller
 
     public function dashboardDokter()
     {
-        $user = \Illuminate\Support\Facades\Auth::user();
-        $dokter = \App\Models\Doctor::where('nama', $user->name)->first();
+        $user = Auth::user();
+        $dokter = Doctor::where('nama', $user->name)->first();
 
         $konsultasiAktif = collect();
         $riwayatKonsultasi = collect();
+        $bookings = collect();
 
         if ($dokter) {
-            $konsultasiAktif = \App\Models\Booking::where('doctor_id', $dokter->id)
+            $konsultasiAktif = Booking::where('doctor_id', $dokter->id)
                 ->where('status', 'accepted')
                 ->with('member')
                 ->orderBy('jadwal', 'asc')
                 ->get();
 
-            $riwayatKonsultasi = \App\Models\Booking::where('doctor_id', $dokter->id)
+            $riwayatKonsultasi = Booking::where('doctor_id', $dokter->id)
                 ->where('status', 'completed')
                 ->with('member')
                 ->orderBy('updated_at', 'desc')
+                ->get();
+                
+            $bookings = Booking::where('doctor_id', $dokter->id)
+                ->with('member')
+                ->orderBy('jadwal', 'asc')
                 ->get();
         }
 
@@ -70,6 +79,7 @@ class HomeController extends Controller
             'dokter' => $dokter,
             'konsultasiAktif' => $konsultasiAktif,
             'riwayatKonsultasi' => $riwayatKonsultasi,
+            'bookings' => $bookings,
             'doctors' => collect()
         ]);
     }

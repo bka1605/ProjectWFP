@@ -22,9 +22,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             CategoriesSeeder::class,
+            DoctorsSeeder::class,
+            ArticleSeeder::class,
         ]);
-        Doctor::factory(10)->create();
-        Article::factory(10)->create();
         Service::factory(10)->create();
         Transaction::factory(10)->create();
         

@@ -8,10 +8,10 @@ class MemberController extends Controller
 {
     public function index()
     {
-        $members = User::all();
+        $members = \App\Models\User::where('role', 'member')->get();
 
         return view('member.index', [
-            'judul' => 'Portal Manajemen: Daftar Pasien / Member',
+            'judul' => 'Daftar Member',
             'members' => $members,
         ]);
     }

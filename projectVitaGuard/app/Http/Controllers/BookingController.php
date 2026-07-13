@@ -64,7 +64,7 @@ class BookingController extends Controller
             ->get();
 
         $transactions = collect();
-        try{
+        try {
             $transactions = Transaction::where('user_id', $user->id)
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -74,11 +74,12 @@ class BookingController extends Controller
         return view('member.history', compact('bookings', 'transactions'));
     }
 
-    public function indexDoctor() {
+    public function indexDoctor()
+    {
         $user = Auth::user();
         $doctor = Doctor::where('nama', $user->name)->first();
-        
-        if(!$doctor) {
+
+        if (!$doctor) {
             return redirect()->route('dokter.dashboard')->with('error', 'Profil dokter tidak ditemukan.');
         }
 
@@ -93,7 +94,7 @@ class BookingController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $booking = Booking::findOrFail($id);
-        
+
         $request->validate([
             'status' => 'required|in:accepted,rejected,completed'
         ]);
@@ -102,6 +103,41 @@ class BookingController extends Controller
             'status' => $request->status
         ]);
 
+        if (auth()->user()->role === 'dokter') {
+            return redirect()->route('member.history')->with('success', 'Status berhasil diupdate!');
+        }
+
         return redirect()->back()->with('success', 'Status jadwal berhasil diubah menjadi ' . strtoupper($request->status) . '!');
+    }
+
+    public function indexAdmin()
+    {
+        // Mengambil semua data booking dengan relasi dokter dan member
+        $bookings = Booking::with(['doctor', 'member'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('consultations.index', compact('bookings'));
+    }
+    public function destroy($id)
+    {
+        $booking = \App\Models\Booking::findOrFail($id);
+        $booking->delete();
+
+        return redirect()->back()->with('success', 'Data diarsipkan.');
+    }
+    public function trashed()
+    {
+        $bookings = Booking::onlyTrashed()->with(['doctor', 'member'])->get();
+
+        return view('consultations.trashed', compact('bookings'));
+    }
+
+    public function restore($id)
+    {
+        $booking = Booking::onlyTrashed()->findOrFail($id);
+        $booking->restore();
+
+        return redirect()->route('consultations.index')->with('success', 'Data berhasil dipulihkan.');
     }
 }

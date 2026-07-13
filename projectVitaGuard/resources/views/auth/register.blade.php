@@ -29,9 +29,9 @@
                             <label for="role" class="col-md-4 col-form-label text-md-end">Role</label>
                             
                             <div class="col-md-6">
-                                <select id="role" class="form-control @error('role') is-invalid @enderror" name="role" required>
-                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                <select id="role" class="form-control @error('role') is-invalid @enderror" name="role" value="member" disabled>
                                     <option value="member" {{ old('role') == 'member' ? 'selected' : '' }}>Member</option>
+                                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                                     <option value="dokter" {{ old('role') == 'dokter' ? 'selected' : '' }}>Dokter</option>
                                 </select>
 

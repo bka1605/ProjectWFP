@@ -40,7 +40,7 @@
                     {{-- KODE ASLI TEMAN ANDA: MENU NAVBAR KHUSUS UNTUK ADMIN       --}}
                     {{-- ========================================================== --}}
                     @else
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('services.index') }}">Services</a>
                         </li>
 
@@ -50,7 +50,11 @@
 
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('category.showExpensiveService') }}">Report</a>
-                        </li>
+                        </li> --}}
+
+                        {{-- <li class="nav-item">
+                            <a class="nav-link" href="{{ route('transactions.index') }}">Transactions</a>
+                        </li> --}}
 
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('doctors.index') }}">Doctors</a>
@@ -61,11 +65,15 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('transactions.index') }}">Transactions</a>
+                            <a class="nav-link" href="{{ route('consultations.index') }}">Consultation</a>
                         </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('members.index') }}">Members</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('account.index') }}">Account</a>
                         </li>
                     @endif
 

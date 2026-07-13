@@ -79,57 +79,6 @@
             </div>
         </div>
 
-        <h5 class="fw-bold text-success mb-3"><i class="bi bi-receipt"></i> Transaksi Layanan Medis</h5>
-        <div class="card border-0 shadow-sm rounded-3 overflow-hidden bg-white">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-success text-success">
-                            <tr>
-                                <th class="ps-4 py-3" style="width: 5%;">No</th>
-                                <th class="py-3">Tanggal Transaksi</th>
-                                <th class="py-3">Layanan / Dokter</th>
-                                <th class="py-3">Status Pembayaran</th>
-                                <th class="text-center py-3" style="width: 15%;">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($transactions as $index => $trx)
-                                <tr>
-                                    <td class="ps-4 fw-bold text-muted">{{ $index + 1 }}</td>
-                                    <td>
-                                        <i class="bi bi-calendar-event text-success me-2"></i>
-                                        {{ $trx->created_at ? $trx->created_at->format('d M Y - H:i') : 'Hari ini' }} WIB
-                                    </td>
-                                    <td class="fw-semibold text-dark">
-                                        {{ $trx->doctor->nama ?? $trx->dokter->nama ?? 'Layanan Medis VitaGuard' }}
-                                    </td>
-                                    <td>
-                                        @if(in_array($trx->status, ['completed', 'selesai', 'success']))
-                                            <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill"><i class="bi bi-check-circle-fill"></i> Lunas / Selesai</span>
-                                        @elseif(in_array($trx->status, ['proses', 'berlangsung', 'pending']))
-                                            <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill"><i class="bi bi-hourglass-split"></i> Diproses</span>
-                                        @else
-                                            <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-pill">{{ ucfirst($trx->status) }}</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center pe-4">
-                                        <button class="btn btn-outline-success btn-sm rounded-pill px-3">
-                                            <i class="bi bi-file-earmark-text"></i> Invoice
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">Belum ada riwayat transaksi layanan.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
         <div class="alert alert-info border-0 shadow-sm mt-5 rounded-3 d-flex align-items-center" role="alert">
             <i class="bi bi-shield-lock-fill fs-4 me-3 text-info"></i>
             <div class="small">
