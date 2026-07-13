@@ -15,6 +15,7 @@
         <form method="POST" action="{{ route('consultation.close', $booking->id) }}"
               onsubmit="return confirm('Yakin ingin menutup konsultasi ini?');">
             @csrf
+            @method('PATCH')
             <button type="submit" class="btn btn-outline-danger btn-sm">Tutup Konsultasi</button>
         </form>
         @endif

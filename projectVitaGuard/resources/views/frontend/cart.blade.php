@@ -71,14 +71,14 @@
                         @php
                             $grandTotal = 0;
                             foreach ($cart as $r) {
-                                $grandTotal += $r['service']->price * $r['quantity'];
+                                $grandTotal += (int)$r['service']->price * $r['quantity'];
                             }
                         @endphp
 
                         @foreach ($cart as $r)
                             <div class="d-flex justify-content-between mb-1 small">
                                 <span class="text-muted">{{ $r['service']->service_name }} x{{ $r['quantity'] }}</span>
-                                <span>Rp {{ number_format($r['service']->price * $r['quantity'], 0, ',', '.') }}</span>
+                                <span>Rp {{ number_format((int)$r['service']->price * $r['quantity'], 0, ',', '.') }}</span>
                             </div>
                         @endforeach
 

@@ -13,23 +13,33 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ConsultationController;
 
+# untuk mengaktifkan semua rute bawaan Laravel UI/Breeze untuk sistem autentikasi, login, register, reset dan logout 
 Auth::routes();
 
+# route untuk menampilkan halaman beranda utama aplikasi 
 Route::get('/', [FrontEndController::class, 'home'])->name('home');
+# route untuk menampilkan halaman detail dari sebuah servuce berdasarkan parameter service yang di klik 
 Route::get('/detail/{service}', [FrontEndController::class, 'detail'])->name('detailService');
+# route untuk menampilkan halaman keranjang belanja untuk melihat layanan
 Route::get('/cart', [FrontEndController::class, 'cart'])->name('cart');
+# route untuk memperbarui atau memasukan item ke dalam keranjang 
 Route::put('/goto-cart/{service}', [FrontEndController::class, 'putCart'])->name('putCart');
+# route untuk menghapus item layanan tertentu dari keranjang belanja 
 Route::delete('/goto-cart/{service}', [FrontEndController::class, 'deleteCart'])->name('deleteCart');
+# route untuk memproses data belanjaan menjadi transaksi, dia wajib login
 Route::post('/submit', [FrontEndController::class, 'checkout'])->name('checkout')->middleware('auth');
 
+# route untuk menampilkan view tamplate bernama welcomehealth
 Route::get('/welcome', function () {
     return view('welcomehealth');
 })->name('welcome.portal');
 
+# route untuk menampilkan halaman pilihan menu utama 
 Route::get('/menu', function () {
     return view('menu');
 })->name('menu');
 
+# route untuk mengarahkan pengguna berdasarkan parameter jenis 
 Route::get('/menu/{jenis}', function ($jenis) {
     if ($jenis === 'konsultasi') {
         return view('menukonsul');
@@ -39,10 +49,12 @@ Route::get('/menu/{jenis}', function ($jenis) {
     abort(404);
 })->name('menu.jenis');
 
+# route ini dibungkus menggunakan middleware artinya hanya pengguna login yang memiliki role admin yang dibolehkan akses 
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
+    # route untuk menampilkan halaman pusat monitoring/Dashboard khusus administrator
     Route::get('/admin', [HomeController::class, 'dashboard'])->name('admin.dashboard');
-
+    # route untuk mengarahkan ke URL admin secara cepat, jika /categories dia akan redirect kesana dengan cepat 
     Route::get('/admin/{jenis}', function ($jenis) {
         if ($jenis === 'categories') {
             return redirect()->route('categories.index');
@@ -54,6 +66,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         abort(404);
     })->name('admin.menu');
 
+    # route untuk membuat 7 rute CRUD secara otomatis utnuk masing - masing controller 
     Route::resource('services', ServiceController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('transactions', TransactionController::class);
@@ -62,12 +75,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('members', MemberController::class);
     Route::resource('bookings', BookingController::class);
 
+    # route untuk menampilkan daftar layanan kesehatan dengan tarif termahal 
     Route::get('/category/showExpensiveService', [CategoryController::class, 'showExpensiveService'])
         ->name('category.showExpensiveService');
+    # route untuk menampilkan info detail terkait daftar layanan pada kategori tertentu 
     Route::post('/category/showInfo', [CategoryController::class, 'showInfo'])
         ->name('category.showInfo');
+    # menampilkan list services 
     Route::post('/category/showListServices', [CategoryController::class, 'showListServices'])
         ->name('category.showListServices');
+
+    # route khusus berbasis POST untuk Kategori, Artikel, Layanan, dan Transaksi agar Admin bisa melakukan edit data via modal pop-up dan hapus data secara real-time tanpa perlu memuat ulang seluruh halaman (menggunakan AJAX)
 
     Route::post('/ajax/category/getEditForm', [CategoryController::class, 'getEditForm'])
         ->name('category.getEditForm');
@@ -106,19 +124,42 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ->name('transaction.deleteData');
 });
 
+# route untuk menampilkan halaman statistik kerja khusus dokter 
 Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->name('dokter.')->group(function () {
     Route::get('/dashboard', [HomeController::class, 'dashboardDokter'])->name('dashboard');
 
+    # route untuk menampilkan daftar reservasi booking konsultasi
     Route::get('/bookings', [BookingController::class, 'indexDoctor'])->name('bookings');
+    # route untuk mengubah status booking menggunakan metode HTTP patch 
     Route::patch('/bookings/{booking}/status', [BookingController::class, 'updateStatus'])->name('bookings.updateStatus');
 });
 
+# route dimana hanya bisa diakses oleh member terdaftar 
 Route::middleware(['auth', 'role:member'])->prefix('member')->name('member.')->group(function () {
+    # masuk ke halaman dashboard member 
     Route::get('/dashboard', [HomeController::class, 'dashboardMember'])->name('dashboard');
 
+    # menampilkan formulir pembuatan jadwal booking dengan dokter tertentu berdasarkan id 
     Route::get('/booking/create/{doctor_id}', [BookingController::class, 'create'])->name('booking.create');
+    # menyimpan formulir booking yang diajukan member ke dalam database 
     Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
+    # menampilkan riwayat janji temu personal milik member. 
     Route::get('/history', [BookingController::class, 'history'])->name('history');
+    //  untuk melihat semua daftar dokter
+    Route::get('/member/doctors', [App\Http\Controllers\HomeController::class, 'memberDoctors'])->name('doctors');
+
+    //  untuk melihat detail profil dokter tertentu
+    Route::get('/member/doctors/{id}', [App\Http\Controllers\HomeController::class, 'memberDoctorProfile'])->name('doctors.profile');
+
+    // Rute untuk daftar artikel dan fitur pencarian
+    Route::get('/member/articles', [App\Http\Controllers\HomeController::class, 'memberArticles'])->name('articles');
+
+    // Rute untuk membaca detail artikel tertentu berdasarkan ID
+    Route::get('/member/articles/{id}', [App\Http\Controllers\HomeController::class, 'memberArticleDetail'])->name('articles.detail');
+
+    // Rute untuk melihat riwayat konsultasi khusus member (tidak bisa hapus)
+    //Route::get('/member/history', [App\Http\Controllers\HomeController::class, 'memberHistory'])->name('member.history');
+
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -127,26 +168,12 @@ Route::middleware(['auth'])->group(function () {
 
 Route::put('/dokter/profile/update', [HomeController::class, 'updateProfileDokter'])->name('dokter.profile.update');
 
-//  untuk melihat semua daftar dokter
-Route::get('/member/doctors', [App\Http\Controllers\HomeController::class, 'memberDoctors'])->name('member.doctors');
-
-//  untuk melihat detail profil dokter tertentu
-Route::get('/member/doctors/{id}', [App\Http\Controllers\HomeController::class, 'memberDoctorProfile'])->name('member.doctors.profile');
-
-// Rute untuk daftar artikel dan fitur pencarian
-Route::get('/member/articles', [App\Http\Controllers\HomeController::class, 'memberArticles'])->name('member.articles');
-
-// Rute untuk membaca detail artikel tertentu berdasarkan ID
-Route::get('/member/articles/{id}', [App\Http\Controllers\HomeController::class, 'memberArticleDetail'])->name('member.articles.detail');
-
-// Rute untuk melihat riwayat konsultasi khusus member (tidak bisa hapus)
-//Route::get('/member/history', [App\Http\Controllers\HomeController::class, 'memberHistory'])->name('member.history');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/consultation/{id}', [ConsultationController::class, 'show'])
         ->name('consultation.show');
 
-    // Kirim pesan (AJAX POST, pola sama seperti Week 7/11)
+    
     Route::post('/consultation/send', [ConsultationController::class, 'sendMessage'])
         ->name('consultation.send');
 
