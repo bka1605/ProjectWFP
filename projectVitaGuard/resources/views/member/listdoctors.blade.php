@@ -35,7 +35,6 @@
                         </div>
                         <div class="d-grid gap-2">
                             <a href="{{ route('member.doctors.profile', $doc->id) }}" class="btn btn-outline-primary btn-sm rounded-pill">Lihat Profil Lengkap</a>
-                            <button class="btn btn-primary btn-sm rounded-pill">Mulai Chat Konsultasi</button>
                             <a href="{{ route('member.booking.create', $doc->id) }}" class="btn btn-primary rounded-pill btn-sm">Booking Jadwal</a>
                         </div>
                     </div>

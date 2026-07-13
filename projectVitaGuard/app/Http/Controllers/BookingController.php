@@ -104,7 +104,7 @@ class BookingController extends Controller
         ]);
 
         if (auth()->user()->role === 'dokter') {
-            return redirect()->route('member.history')->with('success', 'Status berhasil diupdate!');
+            return redirect()->route('dokter.bookings')->with('success', 'Status berhasil diupdate!');
         }
 
         return redirect()->back()->with('success', 'Status jadwal berhasil diubah menjadi ' . strtoupper($request->status) . '!');
