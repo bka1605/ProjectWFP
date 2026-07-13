@@ -44,9 +44,7 @@
                 </table>
             </div>
         </div>
-    </div>
-
-    {{-- modal create --}}
+    </div>    
 
     <div class="modal fade" id="modalCreateUser" tabindex="-1">
         <div class="modal-dialog">
@@ -77,9 +75,7 @@
                 </div>
             </form>
         </div>
-    </div>
-
-    {{-- modal edit --}}
+    </div>    
 
     <div class="modal fade" id="modalEditUser" tabindex="-1">
         <div class="modal-dialog">
@@ -109,16 +105,13 @@
     </div>
 
     <script>
-        function editUser(id, name, email, role) {
-            // Isi value ke input modal
+        function editUser(id, name, email, role) {            
             document.getElementById('edit_name').value = name;
             document.getElementById('edit_email').value = email;
             document.getElementById('edit_role').value = role;
-
-            // Ubah action form supaya mengarah ke route update yang benar
+            
             document.getElementById('editForm').action = '/account/' + id;
-
-            // Tampilkan modal (menggunakan Bootstrap 5)
+            
             var myModal = new bootstrap.Modal(document.getElementById('modalEditUser'));
             myModal.show();
         }

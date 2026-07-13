@@ -64,8 +64,6 @@
     </div>
 @endsection
 
-{{-- modal create --}}
-
 <div class="modal fade" id="modalCreateUser" tabindex="-1">
     <div class="modal-dialog">
         <form action="{{ route('account.store') }}" method="POST" class="modal-content">
@@ -96,8 +94,6 @@
         </form>
     </div>
 </div>
-
-{{-- modal edit --}}
 
 <div class="modal fade" id="modalEditUser" tabindex="-1">
     <div class="modal-dialog">

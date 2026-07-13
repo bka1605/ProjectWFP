@@ -11,7 +11,7 @@
             <form method="POST" action="{{ route('transactions.store') }}">
                 @csrf
 
-                {{-- Member --}}
+                
                 <div class="mb-3">
                     <label for="user_id" class="form-label fw-semibold">Member / Pasien <span class="text-danger">*</span></label>
                     <select class="form-select @error('user_id') is-invalid @enderror"
@@ -29,7 +29,7 @@
                     @enderror
                 </div>
 
-                {{-- Services (Many-to-Many: bisa pilih lebih dari 1) --}}
+                
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Services <span class="text-danger">*</span></label>
                     <small class="text-muted d-block mb-2">Centang satu atau lebih service untuk transaksi ini.</small>
@@ -54,7 +54,7 @@
                     </div>
                 </div>
 
-                {{-- Tanggal --}}
+            
                 <div class="mb-3">
                     <label for="tanggal_transaksi" class="form-label fw-semibold">Tanggal Transaksi <span class="text-danger">*</span></label>
                     <input type="datetime-local"
@@ -67,7 +67,7 @@
                     @enderror
                 </div>
 
-                {{-- Status --}}
+                
                 <div class="mb-3">
                     <label for="status" class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
                     <select class="form-select @error('status') is-invalid @enderror"

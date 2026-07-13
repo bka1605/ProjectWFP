@@ -80,7 +80,7 @@ class CategoryController extends Controller
     {
         $this->authorize('delete-permission', Auth::user());
         try {
-            $category->delete(); // soft delete
+            $category->delete(); // ini soft delete
             return redirect()->route('categories.index')
                 ->with('success', 'Category berhasil dihapus!');
         } catch (\PDOException $ex) {

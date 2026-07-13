@@ -35,8 +35,7 @@
                                     <i class="bi bi-clock me-1 text-primary"></i> 
                                     {{ \Carbon\Carbon::parse($booking->jadwal)->format('d M Y - H:i') }} WIB
                                 </td>
-                                <td class="fw-semibold">
-                                    {{-- Mengambil nama dari tabel users berdasarkan member_id secara aman --}}
+                                <td class="fw-semibold">                                    
                                     {{ \App\Models\User::find($booking->member_id)->name ?? 'Member ID: '.$booking->member_id }}
                                 </td>
                                 <td>

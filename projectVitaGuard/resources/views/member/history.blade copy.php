@@ -31,8 +31,7 @@
                                         <i class="bi bi-calendar-event text-primary me-2"></i>
                                         {{ Carbon::parse($row->jadwal)->format('d M Y - H:i') }} WIB
                                     </td>
-                                    <td class="fw-semibold text-dark">
-                                        {{-- Mengambil nama dokter dari relasi atau fallback teks jika kosong --}}
+                                    <td class="fw-semibold text-dark">                                        
                                         {{ $row->doctor->nama ?? 'Tim Medis VitaGuard' }}
                                     </td>
                                     <td>
@@ -69,8 +68,7 @@
                                         @endif
                                     </td>
                                 </tr>
-                            @empty
-                                {{-- Tampilan Dummy Pengisi Data jika tabel transaksi kelompok Anda masih kosong --}}
+                            @empty                                
                                 <tr>
                                     <td class="text-center ps-4 fw-bold text-muted">1</td>
                                     <td><i class="bi bi-calendar-event text-primary me-2"></i> 05 Jul 2026 - 14:20 WIB</td>

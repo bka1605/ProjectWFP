@@ -1,9 +1,3 @@
-{{--
-    categories/getEditForm.blade.php
-    Digunakan untuk Edit Type A: form dikirim secara normal (redirect + reload).
-    File ini di-render oleh CategoryController::getEditForm() sebagai HTML string.
---}}
-
 <h5 class="mb-3">Update Category</h5>
 
 <form method="POST" action="{{ route('categories.update', $data->id) }}" enctype="multipart/form-data">

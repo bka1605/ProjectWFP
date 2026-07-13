@@ -86,8 +86,7 @@ class HomeController extends Controller
 
 
     public function updateProfileDokter(Request $request)
-    {
-        /** @var \App\Models\User $user */
+    {        
         $user = \Illuminate\Support\Facades\Auth::user();
 
         $request->validate([
@@ -173,7 +172,7 @@ class HomeController extends Controller
         $artikel = \App\Models\Article::findOrFail($id);
 
         return view('member.detailarticle', [
-            'judul' => $artikel->judul . ' - VitaGuard', // Menggunakan $artikel->judul
+            'judul' => $artikel->judul . ' - VitaGuard',
             'article' => $artikel
         ]);
     }

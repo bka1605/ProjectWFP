@@ -15,8 +15,7 @@
         }
         body {
             background-color: #f4f6f9;
-        }
-        /* ===== Sidebar ===== */
+        }        
         .sidebar {
             position: fixed;
             top: 0;
@@ -67,9 +66,7 @@
             border-left-color: #4d8dff;
             font-weight: 600;
         }
-        .sidebar .nav-link i { font-size: 1.05rem; width: 1.2rem; text-align: center; }
-
-        /* ===== Topbar ===== */
+        .sidebar .nav-link i { font-size: 1.05rem; width: 1.2rem; text-align: center; }        
         .topbar {
             margin-left: var(--sidebar-width);
             background: #fff;
@@ -85,8 +82,6 @@
         .sidebar-toggle-btn {
             display: none;
         }
-
-        /* ===== Content ===== */
         .content-wrapper {
             margin-left: var(--sidebar-width);
             padding: 1.5rem;
@@ -117,7 +112,6 @@
         $current = Route::currentRouteName();
     @endphp
 
-    {{-- ================= SIDEBAR ================= --}}
     <aside class="sidebar" id="appSidebar">
         <a href="{{ $dashboardRoute }}" class="sidebar-brand">
             <i class="bi bi-heart-pulse-fill"></i> VitaGuard
@@ -165,7 +159,7 @@
         </nav>
     </aside>
 
-    {{-- ================= TOPBAR ================= --}}
+
     <div class="topbar">
         <button class="btn btn-outline-secondary sidebar-toggle-btn" type="button" id="sidebarToggleBtn">
             <i class="bi bi-list"></i>
@@ -186,8 +180,7 @@
             </form>
         </div>
     </div>
-
-    {{-- ================= CONTENT ================= --}}
+    
     <main class="content-wrapper">
         @yield('content')
 

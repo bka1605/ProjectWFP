@@ -51,8 +51,7 @@
           <li><a class="nav-link {{ Request::routeIs('member.dashboard') ? 'active' : '' }}" href="{{ route('member.dashboard') }}">Dashboard</a></li>
           <li><a class="nav-link {{ Request::routeIs('member.doctors*') ? 'active' : '' }}" href="{{ route('member.doctors') }}">Daftar Dokter</a></li>
           <li><a class="nav-link {{ Request::routeIs('member.articles*') ? 'active' : '' }}" href="{{ route('member.articles') }}">Artikel</a></li>
-          
-          {{-- PERUBAHAN DI SINI: Menyambungkan menu ke route member.history dan memberi class active --}}
+                    
           <li><a class="nav-link {{ Request::routeIs('member.history') ? 'active' : '' }}" href="{{ route('member.history') }}">Riwayat Konsultasi</a></li>
         </ul>
       </nav>

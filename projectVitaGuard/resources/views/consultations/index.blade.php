@@ -44,7 +44,6 @@
                                         {{ \Carbon\Carbon::parse($booking->jadwal)->format('d M Y, H:i') }}
                                     </td>
                                     <td>
-                                        {{-- Badge Status yang menampilkan warna sesuai status --}}
                                         @php
                                             $color = match ($booking->status) {
                                                 'completed' => 'bg-success',
@@ -87,7 +86,6 @@
     </div>
 @endsection
 
-{{-- modal edit --}}
 <div class="modal fade" id="modalEditStatus" tabindex="-1">
     <div class="modal-dialog">
         <form id="editStatusForm" method="POST">

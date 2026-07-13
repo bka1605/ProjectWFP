@@ -136,8 +136,7 @@
                 </div>
             </div>
         </div>
-
-        {{-- PATCH #2: Riwayat Konsultasi dengan Relasi Member dan Link Riwayat Percakapan --}}
+        
         <div class="card shadow-sm border-0 mt-4" id="riwayat-konsultasi">
             <div class="card-header bg-primary text-white fw-bold">
                 <h5 class="mb-0">✅ Riwayat Konsultasi & Daftar Pasien</h5>
@@ -257,9 +256,7 @@
                 </table>
             </div>
         </div>
-    @endif
-
-    {{-- modal edit dokter --}}
+    @endif    
 
     <div class="modal fade" id="modalEdit" tabindex="-1">
         <div class="modal-dialog">
@@ -282,9 +279,7 @@
         });
     }
     </script>
-    @endpush
-
-    {{-- modal tambah dokter --}}
+    @endpush    
 
     <div class="modal fade" id="modalCreateDoctor" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">

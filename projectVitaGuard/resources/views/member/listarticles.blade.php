@@ -34,8 +34,7 @@
                         <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 180px; font-size: 4rem;">
                             <i class="bi bi-journal-medical"></i>
                         </div>
-                        
-                        {{-- STRUKTUR BARU DI SINI: JUDUL (BOLD) -> TANGGAL -> KONTEN --}}
+                                                
                         <div class="p-4">
                             <h5 class="fw-bold text-dark mb-1 line-clamp" style="font-weight: 700 !important;">{{ $artikel->judul }}</h5>
                             
@@ -49,7 +48,6 @@
                         </div>
                     </div>
 
-                    {{-- Tombol Detail Artikel --}}
                     <div class="p-4 pt-0">
                         <a href="{{ route('member.articles.detail', $artikel->id) }}" class="btn btn-outline-primary btn-sm rounded-pill w-100">Baca Selengkapnya</a>
                     </div>

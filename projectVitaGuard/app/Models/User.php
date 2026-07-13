@@ -47,8 +47,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class, 'user_id');
     }
-
-    # untuk pembagian 2.1 relasi doctors.user_id ke users
+        
     public function doctor()
     {
         
