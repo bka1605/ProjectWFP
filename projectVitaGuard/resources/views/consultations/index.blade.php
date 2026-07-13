@@ -59,7 +59,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-warning"
+                                        <button class="btn btn-sm btn-info"
                                             onclick="editStatus('{{ $booking->id }}', '{{ $booking->status }}')">
                                             Edit
                                         </button>

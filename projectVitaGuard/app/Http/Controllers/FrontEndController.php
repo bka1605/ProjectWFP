@@ -11,6 +11,10 @@ class FrontEndController extends Controller
 {
     public function home()
     {
+        if(!Auth::check()){
+            return redirect()->route('login');
+        }
+
         $datas = Service::with('category')->orderBy('service_name', 'asc')->get();
 
         return view('frontend.home', compact('datas'));

@@ -20,7 +20,7 @@
 
             <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal"
                 data-bs-target="#modalCreateArticle">
-                <i class="bi bi-plus-lg"></i> + New Article
+                <i class="bi bi-plus-lg"></i> New Article
             </button>
         </div>
     </div>

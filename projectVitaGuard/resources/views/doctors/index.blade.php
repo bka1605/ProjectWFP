@@ -209,7 +209,7 @@
 
             <button type="button" class="btn btn-primary shadow-sm" data-bs-toggle="modal"
                 data-bs-target="#modalCreateDoctor">
-                <i class="bi bi-plus-lg"></i> + Tambah Dokter
+                <i class="bi bi-plus-lg"></i> Tambah Dokter
             </button>
             </div>
         </div>
