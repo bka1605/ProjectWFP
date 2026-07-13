@@ -7,102 +7,205 @@
     <title>{{ $judul ?? 'VitaGuard Admin' }}</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --sidebar-width: 250px;
+        }
+        body {
+            background-color: #f4f6f9;
+        }
+        /* ===== Sidebar ===== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: #1c2b4a;
+            color: #cfd8e3;
+            overflow-y: auto;
+            z-index: 1030;
+            transition: transform .3s ease;
+        }
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: 1rem 1.2rem;
+            color: #fff !important;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.15rem;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .sidebar-brand:hover { color: #fff; }
+        .sidebar .nav-section-title {
+            text-transform: uppercase;
+            font-size: .7rem;
+            letter-spacing: .05em;
+            color: #6f83a3;
+            padding: 1rem 1.2rem .35rem;
+        }
+        .sidebar .nav-link {
+            color: #cfd8e3;
+            padding: .6rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            font-size: .92rem;
+            border-left: 3px solid transparent;
+        }
+        .sidebar .nav-link:hover {
+            background: rgba(255,255,255,.06);
+            color: #fff;
+        }
+        .sidebar .nav-link.active {
+            background: rgba(13,110,253,.18);
+            color: #fff;
+            border-left-color: #4d8dff;
+            font-weight: 600;
+        }
+        .sidebar .nav-link i { font-size: 1.05rem; width: 1.2rem; text-align: center; }
+
+        /* ===== Topbar ===== */
+        .topbar {
+            margin-left: var(--sidebar-width);
+            background: #fff;
+            border-bottom: 1px solid #e6e9ee;
+            padding: .65rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+        }
+        .sidebar-toggle-btn {
+            display: none;
+        }
+
+        /* ===== Content ===== */
+        .content-wrapper {
+            margin-left: var(--sidebar-width);
+            padding: 1.5rem;
+            min-height: calc(100vh - 130px);
+        }
+        footer.app-footer {
+            margin-left: var(--sidebar-width);
+            text-align: center;
+            color: #8a94a3;
+            padding: 1rem;
+            font-size: .85rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .topbar, .content-wrapper, footer.app-footer { margin-left: 0; }
+            .sidebar-toggle-btn { display: inline-flex; }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="{{ route('home') }}">VitaGuard</a>
+<body>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVitaGuard"
-                aria-controls="navbarVitaGuard" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    @php
+        $role = Auth::user()->role;
+        $dashboardRoute = $role === 'dokter' ? route('dokter.dashboard') : route('admin.dashboard');
+        $current = Route::currentRouteName();
+    @endphp
 
-            <div class="collapse navbar-collapse" id="navbarVitaGuard">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    {{-- ================= SIDEBAR ================= --}}
+    <aside class="sidebar" id="appSidebar">
+        <a href="{{ $dashboardRoute }}" class="sidebar-brand">
+            <i class="bi bi-heart-pulse-fill"></i> VitaGuard
+        </a>
 
-                    {{-- ========================================================== --}}
-                    {{-- TAMBAHAN BARU: MENU NAVBAR KHUSUS UNTUK DOKTER             --}}
-                    {{-- ========================================================== --}}
-                    @if(Auth::user()->role === 'dokter')
-                        <li class="nav-item">
-                            <a class="nav-link fw-bold text-warning" href="{{ route('home') }}">Dashboard Dokter</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#konsultasi-aktif">Konsultasi Aktif</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#riwayat-konsultasi">Riwayat & Pasien</a>
-                        </li>
+        <nav class="nav flex-column py-2">
+            @if($role === 'dokter')
+                <div class="nav-section-title">Menu Dokter</div>
+                <a href="{{ route('dokter.dashboard') }}" class="nav-link {{ $current === 'dokter.dashboard' ? 'active' : '' }}">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a href="{{ route('dokter.bookings') }}" class="nav-link {{ $current === 'dokter.bookings' ? 'active' : '' }}">
+                    <i class="bi bi-calendar-check"></i> Booking Konsultasi
+                </a>
+            @else
+                <div class="nav-section-title">Menu Utama</div>
+                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ $current === 'admin.dashboard' ? 'active' : '' }}">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
 
-                    {{-- ========================================================== --}}
-                    {{-- KODE ASLI TEMAN ANDA: MENU NAVBAR KHUSUS UNTUK ADMIN       --}}
-                    {{-- ========================================================== --}}
-                    @else
-                        {{-- <li class="nav-item">
-                            <a class="nav-link" href="{{ route('services.index') }}">Services</a>
-                        </li>
+                <div class="nav-section-title">Data Master</div>
+                <a href="{{ route('doctors.index') }}" class="nav-link {{ str_starts_with($current, 'doctors.') ? 'active' : '' }}">
+                    <i class="bi bi-person-badge"></i> Dokter
+                </a>
+                <a href="{{ route('members.index') }}" class="nav-link {{ str_starts_with($current, 'members.') ? 'active' : '' }}">
+                    <i class="bi bi-people"></i> Member
+                </a>
+                <a href="{{ route('articles.index') }}" class="nav-link {{ str_starts_with($current, 'articles.') ? 'active' : '' }}">
+                    <i class="bi bi-newspaper"></i> Artikel Kesehatan
+                </a>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('categories.index') }}">Categories</a>
-                        </li>
+                <div class="nav-section-title">Konsultasi</div>
+                <a href="{{ route('consultations.index') }}" class="nav-link {{ $current === 'consultations.index' ? 'active' : '' }}">
+                    <i class="bi bi-chat-left-text"></i> Data Konsultasi
+                </a>
+                <a href="{{ route('consultations.trashed') }}" class="nav-link {{ $current === 'consultations.trashed' ? 'active' : '' }}">
+                    <i class="bi bi-trash"></i> Arsip Konsultasi
+                </a>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('category.showExpensiveService') }}">Report</a>
-                        </li> --}}
+                <div class="nav-section-title">Sistem</div>
+                <a href="{{ route('account.index') }}" class="nav-link {{ str_starts_with($current, 'account.') ? 'active' : '' }}">
+                    <i class="bi bi-shield-lock"></i> Akun Pengguna
+                </a>
+            @endif
+        </nav>
+    </aside>
 
-                        {{-- <li class="nav-item">
-                            <a class="nav-link" href="{{ route('transactions.index') }}">Transactions</a>
-                        </li> --}}
+    {{-- ================= TOPBAR ================= --}}
+    <div class="topbar">
+        <button class="btn btn-outline-secondary sidebar-toggle-btn" type="button" id="sidebarToggleBtn">
+            <i class="bi bi-list"></i>
+        </button>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('doctors.index') }}">Doctors</a>
-                        </li>
+        <span class="fw-semibold text-secondary">{{ $judul ?? 'VitaGuard Admin' }}</span>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('articles.index') }}">Articles</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('consultations.index') }}">Consultation</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('members.index') }}">Members</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('account.index') }}">Account</a>
-                        </li>
-                    @endif
-
-                </ul> 
-                
-                <span class="navbar-text text-white me-3">
-                    Halo, {{ Auth::user()->name }} ({{ Auth::user()->role }})
-                </span>
-
-                <form action="{{ route('logout') }}" method="post" class="d-inline">
-                    @csrf
-                    <input type="submit" value="Logout" class='btn btn-danger btn-sm' />
-                </form>
-            </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-muted small">
+                <i class="bi bi-person-circle me-1"></i>
+                Halo, {{ Auth::user()->name }} <span class="badge bg-secondary">{{ $role }}</span>
+            </span>
+            <form action="{{ route('logout') }}" method="post" class="d-inline m-0">
+                @csrf
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </form>
         </div>
-    </nav>
+    </div>
 
-    <main class="container py-4">
+    {{-- ================= CONTENT ================= --}}
+    <main class="content-wrapper">
         @yield('content')
 
         @stack('modals')
     </main>
 
-    <footer class="text-center text-muted py-4">
+    <footer class="app-footer">
         <small>VitaGuard &copy; 2026</small>
     </footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.getElementById('sidebarToggleBtn')?.addEventListener('click', function () {
+            document.getElementById('appSidebar').classList.toggle('show');
+        });
+    </script>
 
     @stack('script')
 </body>
